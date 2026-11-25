@@ -1,6 +1,6 @@
 # TELMEX OM — Portal de Presentaciones
 
-Sitio: https://telmexom.github.io/
+Sitio: https://telmex-om.github.io/
 
 ## Estructura
 
