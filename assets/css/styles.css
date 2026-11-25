@@ -1,0 +1,57 @@
+:root {
+  --navy: #003b71;
+  --blue: #0067b1;
+  --sky: #e8f1fa;
+  --text: #1d2939;
+  --muted: #667085;
+  --border: #e4e7ec;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+  background: #f9fafb;
+  line-height: 1.5;
+}
+
+header {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+  color: #fff;
+  padding: 4rem 1.5rem 3rem;
+}
+
+.container { max-width: 1080px; margin: 0 auto; padding: 0 1.5rem; }
+
+.eyebrow { text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.8rem; opacity: 0.75; }
+header h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 0.5rem 0; }
+header p { font-size: 1.1rem; opacity: 0.85; max-width: 640px; }
+
+main { padding: 3rem 0; }
+
+.filters { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.filter {
+  border: 1px solid var(--border); background: #fff; color: var(--text);
+  padding: 0.4rem 1rem; border-radius: 999px; cursor: pointer; font-size: 0.9rem;
+}
+.filter.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+
+.card {
+  display: block; background: #fff; border: 1px solid var(--border); border-radius: 12px;
+  padding: 1.5rem; text-decoration: none; color: inherit;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0, 59, 113, 0.12); }
+
+.tag {
+  display: inline-block; background: var(--sky); color: var(--blue);
+  font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+  padding: 0.2rem 0.6rem; border-radius: 4px;
+}
+.card h3 { margin: 0.75rem 0 0.5rem; font-size: 1.15rem; }
+.card time { color: var(--muted); font-size: 0.85rem; }
+
+footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 2rem 0; border-top: 1px solid var(--border); }

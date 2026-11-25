@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TELMEX OM | Portal de Presentaciones</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <span class="eyebrow">TELMEX OM</span>
+      <h1>Portal de Presentaciones</h1>
+      <p>Presentaciones y documentación del proyecto OM, organizadas por categoría.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="filters">
+      <button class="filter active" data-category="all">Todas</button>
+      <button class="filter" data-category="implementation">Implementación</button>
+    </div>
+
+    <div class="grid">
+      <!-- Para agregar una presentación, copia este bloque y actualiza href, categoría, título y fecha -->
+      <a class="card" data-category="implementation" href="presentations/implementation/2026-11-25-portal-om/">
+        <span class="tag">Implementación</span>
+        <h3>Portal para llevar presentaciones y documentación de OM</h3>
+        <time datetime="2026-11-25">25 de noviembre de 2026</time>
+      </a>
+    </div>
+  </main>
+
+  <footer>&copy; 2026 TELMEX OM</footer>
+
+  <script>
+    document.querySelectorAll('.filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const cat = btn.dataset.category;
+        document.querySelectorAll('.card').forEach(card => {
+          card.style.display = (cat === 'all' || card.dataset.category === cat) ? '' : 'none';
+        });
+      });
+    });
+  </script>
+</body>
+</html>
