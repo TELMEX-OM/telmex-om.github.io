@@ -80,7 +80,10 @@
               </button>
             </td>
             <td class="muted">${esc(d.actualizado)}</td>
-            <td><button class="link-btn" data-edit="${esc(d.id)}">Editar</button></td>
+            <td class="row-actions">
+              <button class="link-btn" data-edit="${esc(d.id)}">Editar</button>
+              <button class="link-btn danger" data-delete="${esc(d.id)}">Borrar</button>
+            </td>
           </tr>`;
       }).join('') : '<tr><td colspan="7" class="muted">No hay dudas con estos filtros.</td></tr>';
 
@@ -109,6 +112,7 @@
             <div class="meeting-actions">
               ${isUrl(n.url) ? `<a href="${esc(n.url)}" target="_blank" rel="noopener">Ver grabación →</a>` : ''}
               <button class="link-btn" data-edit="${esc(n.id)}">Editar</button>
+              <button class="link-btn danger" data-delete="${esc(n.id)}">Borrar</button>
             </div>
           </div>
         </article>`).join('') : '<p class="muted">No hay notas ni grabaciones con este filtro.</p>';
@@ -183,10 +187,23 @@
     item => item.url && !isUrl(item.url) ? 'El enlace debe empezar con https://' : (!item.notas && !item.url ? 'Agrega notas o un enlace a la grabación.' : null),
     item => item);
 
+  async function remove(type, formId, id, label) {
+    const form = $(formId);
+    if (!confirm(`¿Borrar “${label}”? Esta acción no se puede deshacer.`)) return;
+    try {
+      await send(type, form, { action: 'delete', id });
+      if (state[type].editing === id) resetForm(type);
+      render[type]();
+      flash(form, 'Registro borrado.');
+    } catch (err) { flash(form, err.message, true); }
+  }
+
   $('dudas-body').addEventListener('click', async e => {
     const toggle = e.target.closest('.toggle');
     const edit = e.target.closest('[data-edit]');
+    const del = e.target.closest('[data-delete]');
     if (edit) startEdit('dudas', edit.dataset.edit, dudaFields);
+    if (del) remove('dudas', 'duda-form', del.dataset.delete, state.dudas.items.find(d => d.id === del.dataset.delete)?.tema);
     if (!toggle) return;
     const form = $('duda-form');
     toggle.disabled = true;
@@ -199,7 +216,9 @@
 
   $('notas-list').addEventListener('click', e => {
     const edit = e.target.closest('[data-edit]');
+    const del = e.target.closest('[data-delete]');
     if (edit) startEdit('notas', edit.dataset.edit, notaFields);
+    if (del) remove('notas', 'nota-form', del.dataset.delete, state.notas.items.find(n => n.id === del.dataset.delete)?.titulo);
   });
 
   refresh();

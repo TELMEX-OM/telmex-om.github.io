@@ -172,6 +172,9 @@ td:last-child, th:last-child { text-align: center; }
 .toggle.closed { background: #d1fae5; color: #065f46; }
 .toggle:disabled { opacity: 0.5; cursor: wait; }
 .link-btn { border: none; background: none; color: var(--accent); cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+.link-btn.danger { color: #ba0517; }
+.row-actions { white-space: nowrap; }
+.row-actions .link-btn + .link-btn { margin-left: 0.75rem; }
 
 .notes-form { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.5rem; padding-top: 1rem; border-top: 1px solid var(--pale); }
 .form-row { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }

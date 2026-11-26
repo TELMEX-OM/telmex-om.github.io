@@ -47,16 +47,15 @@ function doPost(e) {
         return clean(item[f]);
       }));
     } else if (body.action === 'update') {
-      const ids = sheet.getRange(2, 1, Math.max(sheet.getLastRow() - 1, 1), 1).getDisplayValues().map(r => r[0]);
-      const index = ids.indexOf(String(body.id));
-      if (index < 0) throw new Error('Registro no encontrado');
-      const row = index + 2;
+      const row = rowOf(sheet, body.id);
       Object.entries(body.changes || {}).forEach(([field, value]) => {
         const col = cfg.fields.indexOf(field);
         if (col <= 0 || field === 'actualizado') return;
         sheet.getRange(row, col + 1).setValue(field === 'status' ? normalizeStatus(value) : clean(value));
       });
       sheet.getRange(row, cfg.fields.indexOf('actualizado') + 1).setValue(now);
+    } else if (body.action === 'delete') {
+      sheet.deleteRow(rowOf(sheet, body.id));
     } else {
       throw new Error('Acción inválida');
     }
@@ -80,6 +79,13 @@ function sheetFor(type) {
     sheet.setFrozenRows(1);
   }
   return [sheet, cfg];
+}
+
+function rowOf(sheet, id) {
+  const ids = sheet.getRange(2, 1, Math.max(sheet.getLastRow() - 1, 1), 1).getDisplayValues().map(r => r[0]);
+  const index = ids.indexOf(String(id));
+  if (index < 0) throw new Error('Registro no encontrado');
+  return index + 2;
 }
 
 function readAll(type) {
