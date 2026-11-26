@@ -24,6 +24,8 @@ docs/refinamientos/*.html       # Refinamientos para el Sprint 3
 
 ## Actualizar el tablero del sprint
 
+Al cambiar CSS o JS, sube el `?v=` de los `<link>`/`<script>` en `index.html` para que los navegadores no usen la versión en caché (GitHub Pages la guarda 10 minutos).
+
 Edita `assets/data/jira.js`: nombre y fechas del sprint, fecha de `updated` y la lista `stories`
 (clave, resumen, estado, responsable y story points de cada historia, sin sub-tareas). Los conteos
 por columna y el filtro por responsable se calculan solos. JQL de referencia:

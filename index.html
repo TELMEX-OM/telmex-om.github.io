@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Squad OM</title>
-  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20261126">
 </head>
 <body>
   <div class="app">
@@ -623,8 +623,8 @@
     </div>
   </div>
 
-  <script src="assets/data/jira.js"></script>
-  <script src="assets/data/notas-config.js"></script>
+  <script src="assets/data/jira.js?v=20261126"></script>
+  <script src="assets/data/notas-config.js?v=20261126"></script>
   <script>
     const sprint = window.JIRA_SPRINT;
     const fmt = d => new Date(d + 'T12:00:00').toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });
@@ -731,6 +731,6 @@
     }));
     showSection(location.hash.slice(1) || 'all');
   </script>
-  <script src="assets/js/notas.js"></script>
+  <script src="assets/js/notas.js?v=20261126"></script>
 </body>
 </html>
