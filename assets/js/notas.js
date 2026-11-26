@@ -1,4 +1,4 @@
-// Dudas y Notas/Grabaciones: leen y escriben en el Google Sheet vía la Web App de Apps Script.
+// Dudas, Notas/Grabaciones y Pendientes: leen y escriben en el Google Sheet vía la Web App de Apps Script.
 (() => {
   const API = window.NOTES_API_URL;
   if (!API) {
@@ -14,10 +14,15 @@
   const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const isUrl = u => /^https?:\/\//i.test(u);
   const norm = t => String(t ?? '').replace(/\s+/g, ' ').trim();
+  const initials = name => norm(name).split(/[\s._-]+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('');
+  const COLORS = ['amarillo', 'rosa', 'azul', 'verde'];
+  const FORMS = { dudas: 'duda-form', notas: 'nota-form', pendientes: 'pendiente-form' };
+  const ADD_LABELS = { dudas: 'Agregar duda', notas: 'Agregar', pendientes: 'Agregar pendiente' };
 
   const state = {
     dudas: { items: [], filters: { tema: '', sprint: '', descripcion: '', comentarios: '', status: 'Abierto' }, editing: null },
-    notas: { items: [], sprint: 'all', editing: null }
+    notas: { items: [], sprint: 'all', editing: null },
+    pendientes: { items: [], responsable: '', status: 'Abierto', editing: null }
   };
 
   async function load(type) {
@@ -135,23 +140,61 @@
         </article>`).join('') : '<p class="muted">No hay notas ni grabaciones con este filtro.</p>';
 
       markChips('notas-sprint-filter', s.sprint);
+    },
+
+    pendientes() {
+      const s = state.pendientes;
+      const open = s.items.filter(p => p.status !== 'Cerrado').length;
+      $('pendientes-open').textContent = open;
+      $('pendientes-done').textContent = s.items.length - open;
+
+      const people = [...new Set(s.items.map(p => norm(p.responsable)).filter(Boolean))].sort();
+      const select = $('pendientes-responsable');
+      select.innerHTML = [['', 'Todos'], ...people.map(p => [p, `${p} (${s.items.filter(x => norm(x.responsable) === p).length})`])]
+        .map(([value, label]) => `<option value="${esc(value)}">${esc(label)}</option>`).join('');
+      select.value = people.includes(s.responsable) ? s.responsable : '';
+      $('pendientes-people').innerHTML = people.map(p => `<option value="${esc(p)}">`).join('');
+
+      const items = s.items
+        .filter(p => !s.responsable || norm(p.responsable) === s.responsable)
+        .filter(p => s.status === 'all' || (p.status || 'Abierto') === s.status);
+
+      $('pendientes-list').innerHTML = items.length ? items.map(p => {
+        const done = p.status === 'Cerrado';
+        const color = COLORS.includes(p.color) ? p.color : 'amarillo';
+        return `
+          <article class="postit ${color}${done ? ' done' : ''}">
+            <p class="pre">${esc(p.tarea)}</p>
+            <div class="postit-owner">
+              <span class="avatar">${esc(initials(p.responsable))}</span>
+              <div><strong>${esc(p.responsable)}</strong><span>${esc(p.sprint)}</span></div>
+            </div>
+            <div class="postit-actions">
+              <button class="toggle ${done ? 'closed' : 'open'}" data-id="${esc(p.id)}" data-next="${done ? 'Abierto' : 'Cerrado'}">${done ? '✓ Hecho' : 'Marcar hecho'}</button>
+              <button class="link-btn" data-edit="${esc(p.id)}">Editar</button>
+              <button class="link-btn danger" data-delete="${esc(p.id)}">Borrar</button>
+            </div>
+          </article>`;
+      }).join('') : '<p class="muted">No hay pendientes con este filtro.</p>';
+
+      markChips('pendientes-status-filter', s.status);
     }
   };
 
   function resetForm(type) {
-    const form = $(type === 'dudas' ? 'duda-form' : 'nota-form');
+    const form = $(FORMS[type]);
     const key = form.querySelector('.team-key').value;
     state[type].editing = null;
     form.reset();
     form.querySelector('.team-key').value = key;
-    form.querySelector('[type=submit]').textContent = type === 'dudas' ? 'Agregar duda' : 'Agregar';
+    form.querySelector('[type=submit]').textContent = ADD_LABELS[type];
     form.querySelector('.form-cancel').hidden = true;
   }
 
   function startEdit(type, id, fields) {
     const item = state[type].items.find(x => x.id === id);
     if (!item) return;
-    const form = $(type === 'dudas' ? 'duda-form' : 'nota-form');
+    const form = $(FORMS[type]);
     state[type].editing = id;
     fields.forEach(f => form.elements[f].value = item[f] || '');
     form.querySelector('[type=submit]').textContent = 'Guardar cambios';
@@ -182,9 +225,10 @@
   }
 
   async function refresh() {
-    const results = await Promise.allSettled([load('dudas'), load('notas')]);
+    const results = await Promise.allSettled([load('dudas'), load('notas'), load('pendientes')]);
     render.dudas();
     render.notas();
+    render.pendientes();
     const ok = results.every(r => r.status === 'fulfilled');
     const time = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
     document.querySelectorAll('.notes-sync').forEach(el => el.textContent = ok ? `Sincronizado ${time}` : 'Sin conexión con el Sheet');
@@ -205,6 +249,8 @@
     render.dudas();
   });
   chips('notas-sprint-filter', sprintChips, 'notas', 'sprint');
+  chips('pendientes-status-filter', [['Abierto', 'Pendientes'], ['Cerrado', 'Hechos'], ['all', 'Todos']], 'pendientes', 'status');
+  $('pendientes-responsable').addEventListener('change', e => { state.pendientes.responsable = e.target.value; render.pendientes(); });
 
   const dudaFields = ['tema', 'sprint', 'descripcion', 'comentarios'];
   const notaFields = ['titulo', 'sprint', 'fecha', 'notas', 'url'];
@@ -212,6 +258,8 @@
   wireForm('notas', 'nota-form', notaFields,
     item => item.url && !isUrl(item.url) ? 'El enlace debe empezar con https://' : (!item.notas && !item.url ? 'Agrega notas o un enlace a la grabación.' : null),
     item => item);
+  const pendienteFields = ['tarea', 'responsable', 'sprint', 'color'];
+  wireForm('pendientes', 'pendiente-form', pendienteFields, () => null, item => ({ ...item, status: 'Abierto' }));
 
   async function remove(type, formId, id, label) {
     const form = $(formId);
@@ -224,20 +272,23 @@
     } catch (err) { flash(form, err.message, true); }
   }
 
+  async function setStatus(type, toggle, message) {
+    const form = $(FORMS[type]);
+    toggle.disabled = true;
+    try {
+      await send(type, form, { action: 'update', id: toggle.dataset.id, changes: { status: toggle.dataset.next } });
+      render[type]();
+      flash(form, message);
+    } catch (err) { flash(form, err.message, true); toggle.disabled = false; }
+  }
+
   $('dudas-body').addEventListener('click', async e => {
     const toggle = e.target.closest('.toggle');
     const edit = e.target.closest('[data-edit]');
     const del = e.target.closest('[data-delete]');
     if (edit) startEdit('dudas', edit.dataset.edit, dudaFields);
     if (del) remove('dudas', 'duda-form', del.dataset.delete, state.dudas.items.find(d => d.id === del.dataset.delete)?.tema);
-    if (!toggle) return;
-    const form = $('duda-form');
-    toggle.disabled = true;
-    try {
-      await send('dudas', form, { action: 'update', id: toggle.dataset.id, changes: { status: toggle.dataset.next } });
-      render.dudas();
-      flash(form, `Status actualizado a ${toggle.dataset.next}.`);
-    } catch (err) { flash(form, err.message, true); toggle.disabled = false; }
+    if (toggle) setStatus('dudas', toggle, `Status actualizado a ${toggle.dataset.next}.`);
   });
 
   $('notas-list').addEventListener('click', e => {
@@ -245,6 +296,15 @@
     const del = e.target.closest('[data-delete]');
     if (edit) startEdit('notas', edit.dataset.edit, notaFields);
     if (del) remove('notas', 'nota-form', del.dataset.delete, state.notas.items.find(n => n.id === del.dataset.delete)?.titulo);
+  });
+
+  $('pendientes-list').addEventListener('click', e => {
+    const toggle = e.target.closest('.toggle');
+    const edit = e.target.closest('[data-edit]');
+    const del = e.target.closest('[data-delete]');
+    if (edit) startEdit('pendientes', edit.dataset.edit, pendienteFields);
+    if (del) remove('pendientes', 'pendiente-form', del.dataset.delete, state.pendientes.items.find(p => p.id === del.dataset.delete)?.tarea);
+    if (toggle) setStatus('pendientes', toggle, toggle.dataset.next === 'Cerrado' ? 'Pendiente marcado como hecho.' : 'Pendiente reabierto.');
   });
 
   refresh();

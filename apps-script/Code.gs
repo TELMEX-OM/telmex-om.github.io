@@ -1,5 +1,5 @@
 /**
- * Squad OM — API de Dudas, Notas y Grabaciones.
+ * Squad OM — API de Dudas, Notas y Grabaciones y Pendientes.
  * Se pega en Extensiones > Apps Script del Google Sheet y se publica como Web App
  * (Ejecutar como: Yo · Acceso: Cualquier usuario). Ver README.md.
  *
@@ -16,6 +16,11 @@ const SHEETS = {
     name: 'Notas y Grabaciones',
     fields: ['id', 'titulo', 'sprint', 'fecha', 'notas', 'url', 'actualizado'],
     headers: ['ID', 'Título', 'Sprint', 'Fecha', 'Notas', 'URL grabación', 'Actualizado']
+  },
+  pendientes: {
+    name: 'Pendientes',
+    fields: ['id', 'tarea', 'responsable', 'sprint', 'color', 'status', 'actualizado'],
+    headers: ['ID', 'Pendiente', 'Responsable', 'Sprint', 'Color', 'Status', 'Actualizado']
   }
 };
 

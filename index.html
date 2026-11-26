@@ -18,6 +18,7 @@
         <button class="nav-item" data-section="docs">Documentación</button>
         <button class="nav-item" data-section="dudas">Dudas</button>
         <button class="nav-item" data-section="notas">Notas y Grabaciones</button>
+        <button class="nav-item" data-section="pendientes">Pendientes</button>
         <button class="nav-item" data-section="sprint-1">Sprint 1</button>
         <button class="nav-item" data-section="sprint-2">Sprint 2</button>
         <button class="nav-item" data-section="sprint-3">Sprint 3</button>
@@ -374,6 +375,53 @@
           </form>
         </div>
 
+        <div class="tile hero docs-intro pendientes-only" hidden>
+          <span class="eyebrow">Tablero del equipo</span>
+          <h2>Pendientes</h2>
+          <p>Los post-it del squad: qué falta por hacer y quién lo tiene asignado. Márcalos como hechos cuando se terminen; todos ven los cambios en segundos.</p>
+          <div class="notes-stats notes-live">
+            <span><strong id="pendientes-open">–</strong> pendientes</span>
+            <span><strong id="pendientes-done">–</strong> hechos</span>
+            <span class="notes-sync">Conectando…</span>
+          </div>
+        </div>
+
+        <div class="tile white pendientes-only notes-setup" hidden>
+          <span class="label">Configuración pendiente</span>
+          <p>Esta sección aún no está conectada al Google Sheet. Sigue los pasos de <code>README.md</code> &gt; “Dudas, Notas y Grabaciones” y pega la URL de la Web App en <code>assets/data/notas-config.js</code>.</p>
+        </div>
+
+        <div class="tile white stories pendientes-only notes-live" hidden>
+          <div class="board-head">
+            <span class="label">Post-it</span>
+            <label class="hint">Responsable <select id="pendientes-responsable" class="inline-select"></select></label>
+          </div>
+          <div class="chips" id="pendientes-status-filter"></div>
+          <div class="postit-board" id="pendientes-list"><p class="muted">Cargando…</p></div>
+
+          <form id="pendiente-form" class="notes-form">
+            <span class="label">Agregar pendiente</span>
+            <textarea name="tarea" placeholder="¿Qué hay que hacer?" rows="2" required maxlength="500"></textarea>
+            <div class="form-row">
+              <input name="responsable" placeholder="Responsable (ej. Gonzalo Lozano)" required maxlength="100" list="pendientes-people">
+              <datalist id="pendientes-people"></datalist>
+              <select name="sprint" class="sprint-select"></select>
+              <select name="color">
+                <option value="amarillo">Amarillo</option>
+                <option value="rosa">Rosa</option>
+                <option value="azul">Azul</option>
+                <option value="verde">Verde</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <input class="team-key" type="password" placeholder="Clave del equipo" autocomplete="off">
+              <button type="button" class="chip form-cancel" hidden>Cancelar</button>
+              <button type="submit" class="primary-btn">Agregar pendiente</button>
+            </div>
+            <span class="notes-message"></span>
+          </form>
+        </div>
+
         <div class="tile hero docs-intro flujo-only" hidden>
           <span class="eyebrow">TELMEX B2C · Order Management</span>
           <h2>Flujo de ventas hasta el Plan de Orquestación</h2>
@@ -652,7 +700,7 @@
       document.querySelectorAll('.home-only').forEach(el => el.hidden = section !== 'all');
       document.querySelectorAll('.docs-only').forEach(el => el.hidden = section !== 'docs');
       document.querySelectorAll('.flujo-only').forEach(el => el.hidden = section !== 'flujo');
-      ['dudas', 'notas'].forEach(name => document.querySelectorAll(`.${name}-only`).forEach(el => {
+      ['dudas', 'notas', 'pendientes'].forEach(name => document.querySelectorAll(`.${name}-only`).forEach(el => {
         const live = !!window.NOTES_API_URL;
         el.hidden = section !== name || (el.classList.contains('notes-live') && !live) || (el.classList.contains('notes-setup') && live);
       }));

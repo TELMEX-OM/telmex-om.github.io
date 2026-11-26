@@ -35,9 +35,9 @@ project = TAC AND sprint = <id del sprint> AND issuetype != Sub-task ORDER BY ra
 
 `JIRA_SPRINT_1` en el mismo archivo guarda las HDUs entregadas de OM Sprint 1 (sprint 829, cerrado).
 
-## Dudas, Notas y Grabaciones (Google Sheet)
+## Dudas, Notas y Grabaciones y Pendientes (Google Sheet)
 
-Las secciones **Dudas** (tabla con status Abierto/Cerrado) y **Notas y Grabaciones** (minutas de reuniones con enlace a la grabación) leen y escriben en un Google Sheet a través de una Web App de Apps Script (`apps-script/Code.gs`). Cualquiera con el portal puede leer; para guardar cambios se pide la **clave del equipo**, que se recuerda en el navegador. El portal se resincroniza cada 30 segundos.
+Las secciones **Dudas** (tabla con status Abierto/Cerrado) y **Notas y Grabaciones** (minutas de reuniones con enlace a la grabación) y **Pendientes** (post-it con responsable, marcables como hechos) leen y escriben en un Google Sheet a través de una Web App de Apps Script (`apps-script/Code.gs`). Cualquiera con el portal puede leer; para guardar cambios se pide la **clave del equipo**, que se recuerda en el navegador. El portal se resincroniza cada 30 segundos.
 
 1. Crea un Google Sheet nuevo (ej. "Squad OM - Notas").
 2. **Extensiones > Apps Script**, borra el contenido y pega `apps-script/Code.gs`. Guarda.
@@ -47,7 +47,7 @@ Las secciones **Dudas** (tabla con status Abierto/Cerrado) y **Notas y Grabacion
    ```js
    window.NOTES_API_URL = 'https://script.google.com/macros/s/XXXX/exec';
    ```
-6. Las hojas `Dudas` y `Notas y Grabaciones` se crean solas en la primera escritura. También se pueden editar directo en el Sheet.
+6. Las hojas `Dudas`, `Notas y Grabaciones` y `Pendientes` se crean solas en la primera escritura. También se pueden editar directo en el Sheet.
 
 Si cambias `Code.gs`, publica con **Implementar > Gestionar implementaciones > Editar > Nueva versión** para conservar la misma URL.
 
