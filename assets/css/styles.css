@@ -163,6 +163,16 @@ td:last-child, th:last-child { text-align: center; }
 .notes-setup { grid-column: 1 / -1; }
 .notes-setup code { background: var(--pale); padding: 0.1rem 0.35rem; border-radius: 4px; }
 .notes-table td.pre { white-space: pre-wrap; max-width: 320px; }
+.notes-table th:nth-child(1) { width: 15%; }
+.notes-table th:nth-child(2) { width: 10%; }
+.notes-table th:nth-child(3) { width: 24%; }
+.notes-table th:nth-child(5) { width: 10%; }
+.notes-table td:nth-child(3) { white-space: pre-wrap; }
+.filter-row th { padding: 0.4rem 0.4rem 0.75rem; border-bottom: 1px solid var(--soft); text-transform: none; letter-spacing: 0; }
+.filter-row select, .filter-row input {
+  width: 100%; min-width: 0; font: inherit; font-size: 0.8rem; font-weight: 400; color: var(--text);
+  padding: 0.35rem 0.5rem; border: 1px solid var(--soft); border-radius: 6px; background: #fff;
+}
 .muted { color: var(--muted); font-size: 0.85rem; }
 .toggle {
   border: none; border-radius: 999px; padding: 0.25rem 0.8rem; cursor: pointer;

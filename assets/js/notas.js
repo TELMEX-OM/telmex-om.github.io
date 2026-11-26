@@ -13,9 +13,10 @@
   const $ = id => document.getElementById(id);
   const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const isUrl = u => /^https?:\/\//i.test(u);
+  const norm = t => String(t ?? '').replace(/\s+/g, ' ').trim();
 
   const state = {
-    dudas: { items: [], sprint: 'all', status: 'Abierto', editing: null },
+    dudas: { items: [], filters: { tema: '', sprint: '', descripcion: '', comentarios: '', status: 'Abierto' }, editing: null },
     notas: { items: [], sprint: 'all', editing: null }
   };
 
@@ -62,15 +63,33 @@
       $('dudas-open').textContent = open;
       $('dudas-closed').textContent = s.items.length - open;
 
+      const f = s.filters;
+      const matches = (text, query) => norm(text).toLowerCase().includes(query.toLowerCase());
       const rows = s.items
-        .filter(d => s.sprint === 'all' || d.sprint === s.sprint)
-        .filter(d => s.status === 'all' || (d.status || 'Abierto') === s.status);
+        .filter(d => !f.tema || norm(d.tema) === f.tema)
+        .filter(d => !f.sprint || d.sprint === f.sprint)
+        .filter(d => !f.status || (d.status || 'Abierto') === f.status)
+        .filter(d => matches(d.descripcion, f.descripcion) && matches(d.comentarios, f.comentarios));
+
+      // Opciones tipo Excel: valores únicos de cada columna con su conteo
+      const options = (field, values) => {
+        const select = $('dudas-filters').querySelector(`[data-filter="${field}"]`);
+        select.innerHTML = [['', 'Todos'], ...values.map(v => [v, `${v} (${s.items.filter(d => (field === 'tema' ? norm(d.tema) : d[field] || 'Abierto') === v).length})`])]
+          .map(([value, label]) => `<option value="${esc(value)}">${esc(label)}</option>`).join('');
+        select.value = values.includes(f[field]) ? f[field] : '';
+      };
+      options('tema', [...new Set(s.items.map(d => norm(d.tema)))].sort());
+      options('sprint', [...new Set(s.items.map(d => d.sprint))].sort());
+      options('status', ['Abierto', 'Cerrado']);
+      const active = Object.values(f).some(Boolean);
+      $('dudas-shown').textContent = `${rows.length} de ${s.items.length}`;
+      $('dudas-clear').hidden = !active;
 
       $('dudas-body').innerHTML = rows.length ? rows.map(d => {
         const closed = d.status === 'Cerrado';
         return `
           <tr>
-            <td><strong>${esc(d.tema)}</strong></td>
+            <td class="pre"><strong>${esc(d.tema)}</strong></td>
             <td><span class="status">${esc(d.sprint)}</span></td>
             <td class="pre">${esc(d.descripcion)}</td>
             <td class="pre">${esc(d.comentarios)}</td>
@@ -87,8 +106,6 @@
           </tr>`;
       }).join('') : '<tr><td colspan="7" class="muted">No hay dudas con estos filtros.</td></tr>';
 
-      markChips('dudas-sprint-filter', s.sprint);
-      markChips('dudas-status-filter', s.status);
     },
 
     notas() {
@@ -176,8 +193,17 @@
   document.querySelectorAll('.sprint-select').forEach(sel => sel.innerHTML = SPRINTS.map(s => `<option>${s}</option>`).join(''));
   document.querySelectorAll('.team-key').forEach(i => i.value = localStorage.getItem(KEY_STORAGE) || '');
   const sprintChips = [['all', 'Todos'], ...SPRINTS.map(s => [s, s])];
-  chips('dudas-sprint-filter', sprintChips, 'dudas', 'sprint');
-  chips('dudas-status-filter', [['Abierto', 'Abiertas'], ['Cerrado', 'Cerradas'], ['all', 'Todas']], 'dudas', 'status');
+  $('dudas-filters').addEventListener('input', e => {
+    const field = e.target.dataset.filter;
+    if (!field) return;
+    state.dudas.filters[field] = e.target.value.trim();
+    render.dudas();
+  });
+  $('dudas-clear').addEventListener('click', () => {
+    Object.keys(state.dudas.filters).forEach(k => state.dudas.filters[k] = '');
+    $('dudas-filters').querySelectorAll('input').forEach(i => i.value = '');
+    render.dudas();
+  });
   chips('notas-sprint-filter', sprintChips, 'notas', 'sprint');
 
   const dudaFields = ['tema', 'sprint', 'descripcion', 'comentarios'];

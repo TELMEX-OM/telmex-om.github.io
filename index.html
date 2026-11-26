@@ -280,12 +280,19 @@
         <div class="tile white stories dudas-only notes-live" hidden>
           <div class="board-head">
             <span class="label">Dudas</span>
-            <div class="chips" id="dudas-status-filter"></div>
+            <span class="hint"><span id="dudas-shown"></span> <button class="link-btn" id="dudas-clear" hidden>Limpiar filtros</button></span>
           </div>
-          <div class="chips" id="dudas-sprint-filter"></div>
           <table class="notes-table">
             <thead>
               <tr><th>Tema</th><th>Sprint</th><th>Descripción</th><th>Comentarios</th><th>Status</th><th>Actualizado</th><th></th></tr>
+              <tr class="filter-row" id="dudas-filters">
+                <th><select data-filter="tema"></select></th>
+                <th><select data-filter="sprint"></select></th>
+                <th><input data-filter="descripcion" type="search" placeholder="Buscar…"></th>
+                <th><input data-filter="comentarios" type="search" placeholder="Buscar…"></th>
+                <th><select data-filter="status"></select></th>
+                <th></th><th></th>
+              </tr>
             </thead>
             <tbody id="dudas-body"><tr><td colspan="7" class="muted">Cargando…</td></tr></tbody>
           </table>
