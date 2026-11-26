@@ -1,0 +1,643 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Squad OM | TMF666 — Mapping R1 vTMX</title><style>
+:root{--ink:#141a23;--cloud:#5374b9;--sky:#8fa7d9;--mist:#eef3fb;--fog:#f6f9fd;--line:#dfe7f5;--text:#1d2939;--muted:#8193a8;--paper:#fff;--signal:#fe9339;--red:#ea001e;--green:#2e844a;--green-bg:#f3fbf0;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--fog);color:var(--text);font-family:var(--sans);font-size:13px;line-height:1.5;}
+header{background:var(--ink);color:#fff;padding:16px 28px 18px;}
+/* Squad OM: barra de marca y regreso al portal */
+.squad-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #232a35;}
+.squad-bar img{width:40px;height:auto;}
+.squad-bar strong{font-size:14px;}
+.squad-bar a{margin-left:auto;color:#c7cfdb;text-decoration:none;font-size:12px;background:#232a35;padding:6px 12px;border-radius:7px;}
+.squad-bar a:hover{color:#fff;background:var(--cloud);}
+header h1{font-size:17px;font-weight:900;letter-spacing:-.02em;margin-bottom:3px;}
+header .sub{font-size:11.5px;opacity:.72;}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--paper);border-bottom:1px solid var(--line);padding:9px 28px;box-shadow:0 2px 6px rgba(3,45,96,.06);}
+.btn{padding:7px 16px;border-radius:7px;font-size:12.5px;font-weight:700;cursor:pointer;border:none;transition:.15s;}
+.btn-save{background:var(--cloud);color:#fff;} .btn-save:hover{background:#0056b3;} .btn-save.saved{background:var(--green);}
+.btn-exp{background:var(--paper);color:var(--cloud);border:1.5px solid var(--cloud);} .btn-exp:hover{background:var(--mist);}
+.legend{display:flex;gap:10px;align-items:center;margin-left:auto;flex-wrap:wrap;}
+.leg{font-size:11.5px;display:flex;align-items:center;gap:4px;}
+.dot{width:11px;height:11px;border-radius:3px;display:inline-block;}
+.dot-c{background:#fde68a;border:1.5px solid #f59e0b;}
+.dot-v{background:#dbeafe;border:1.5px solid #3b82f6;}
+.status{font-size:11.5px;color:var(--muted);}
+.tabs{display:flex;background:var(--paper);border-bottom:2px solid var(--line);padding:0 20px;overflow-x:auto;}
+.tab{padding:10px 16px;font-size:12.5px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap;transition:.1s;margin-bottom:-2px;}
+.tab:hover{color:var(--cloud);} .tab.active{color:var(--cloud);border-bottom-color:var(--cloud);}
+.pane{display:none;padding:16px 20px 48px;max-width:100%;overflow-x:auto;}
+.pane.active{display:block;}
+.sec-title{font-size:13px;font-weight:700;color:var(--ink);margin:18px 0 6px;padding-left:2px;}
+table{width:100%;border-collapse:collapse;background:var(--paper);border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:12px;}
+th{background:var(--ink);color:#fff;font-weight:700;text-align:left;padding:8px 10px;font-size:11.5px;white-space:nowrap;}
+td{padding:4px 6px;border-bottom:1px solid #e8eef7;vertical-align:middle;}
+tr:nth-child(even) td{background:#fafbfd;}
+tr:hover td{background:#eef4ff!important;}
+td.path{font-family:var(--mono);font-size:11px;color:#4a3b6e;background:#f5f0ff!important;min-width:120px;}
+td.field{font-family:var(--mono);font-size:11px;color:#1a3b6e;background:#f0f5ff!important;min-width:90px;}
+td.tmf{font-family:var(--mono);font-size:11px;color:#065f46;background:#f0fbf5!important;}
+td.edit{background:#fffef2!important;}
+td.hdu-cell{background:#f8f8f8!important;font-size:11px;min-width:120px;}
+td input,td textarea{width:100%;border:none;background:transparent;font-family:inherit;font-size:12px;color:inherit;padding:2px 3px;border-radius:3px;resize:vertical;min-height:20px;outline:none;}
+td input:focus,td textarea:focus{background:#fffde0;box-shadow:0 0 0 2px var(--sky);border-radius:3px;}
+/* Row highlights */
+tr.row-change td{background:#fef9c3!important;border-left:4px solid #f59e0b!important;}
+tr.row-change td.path{background:#fef3c7!important;}
+tr.row-change td.field{background:#fef3c7!important;}
+tr.row-change td.tmf{background:#fef3c7!important;}
+tr.row-change td.hdu-cell{background:#fef3c7!important;}
+tr.row-verify td{background:#eff6ff!important;border-left:4px solid #3b82f6!important;}
+tr.row-verify td.path{background:#dbeafe!important;}
+tr.row-verify td.field{background:#dbeafe!important;}
+tr.row-verify td.tmf{background:#dbeafe!important;}
+tr.row-verify td.hdu-cell{background:#dbeafe!important;}
+tr.row-change:hover td{background:#fde68a!important;}
+tr.row-verify:hover td{background:#bfdbfe!important;}
+tr.user-changed td{border-left:4px solid var(--signal)!important;}
+.hdu-link{font-family:var(--mono);font-size:10.5px;background:var(--cloud);color:#fff;padding:1px 6px;border-radius:4px;text-decoration:none;display:inline-block;margin:1px 1px;}
+.hdu-link.verify{background:#3b82f6;}
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px;vertical-align:middle;}
+.b1{background:#dbeafe;color:#1e3a8a;} .b2{background:#fce7f3;color:#9d174d;} .b3{background:#d1fae5;color:#065f46;} .b4{background:#fef3c7;color:#78350f;} .b5{background:#e9d5ff;color:#5b21b6;}
+</style></head><body>
+<header>
+  <div class="squad-bar">
+    <img src="../../assets/img/salesforce-logo.webp" alt="Salesforce">
+    <strong>Squad OM</strong>
+    <a href="../../#docs">&larr; Volver a Documentación</a>
+  </div>
+  <h1><span style="background:#065f46;color:#fff;padding:2px 10px;border-radius:5px;font-size:12px;margin-right:8px;">TMF666</span>TMF666 — Mapping R1 vTMX</h1>
+  <div class="sub">Telmex TAC · Editable Mapping · 27/10/2026</div>
+</header>
+<div class="toolbar">
+  <button class="btn btn-save" onclick="save()">💾 Guardar</button>
+  <button class="btn btn-exp" onclick="exportCSV()">⬇️ CSV</button>
+  <div class="legend">
+    <div class="leg"><span class="dot dot-c"></span> Campo con cambio (HDU)</div>
+    <div class="leg"><span class="dot dot-v"></span> Campo a verificar (HDU)</div>
+  </div>
+  <span class="status">Sin cambios guardados</span>
+</div>
+<div class="tabs"><div class="tab active" data-id="t0" onclick="tab('t0')">POST partyAccount <span class="badge b1">POST</span></div><div class="tab" data-id="t1" onclick="tab('t1')">PATCH partyAccount <span class="badge b4">PATCH</span></div></div>
+<div class="pane active" data-id="t0"><div class="sec-title">POST /partyAccount — Datos principales</div><table><thead><tr>
+  <th>Objeto SF</th><th>Path / Relación</th><th>Campo SF</th>
+  <th>Notas</th><th>Campo TMF (Target)</th><th>Lógica</th><th>Comentarios</th>
+  <th style="background:#b45309;">HDU</th><th style="background:#b45309;">Nota del cambio</th>
+</tr></thead><tbody><tr>
+    <td class="path"><input data-k="k0_so" value="Account (Consumer)"/></td>
+    <td class="path"><input data-k="k0_sp" value=""/></td>
+    <td class="field"><input data-k="k0_sf" value="TMX_OM_CUC__c"/></td>
+    <td class="edit"><input data-k="k0_n" value=""/></td>
+    <td class="tmf"><input data-k="k0_tf" value="clientId"/></td>
+    <td class="edit"><textarea data-k="k0_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k0_cm" rows="2">Mandatory</textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k1_so" value="Order"/></td>
+    <td class="path"><input data-k="k1_sp" value=""/></td>
+    <td class="field"><input data-k="k1_sf" value="TMX_VNT_Tipo_de_cliente__c"/></td>
+    <td class="edit"><input data-k="k1_n" value="Hogar / Negocio"/></td>
+    <td class="tmf"><input data-k="k1_tf" value="regime"/></td>
+    <td class="edit"><textarea data-k="k1_lg" rows="2">RESIDENCIAL / COMERCIAL</textarea></td>
+    <td class="edit"><textarea data-k="k1_cm" rows="2">Mandatory</textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr class="row-change">
+    <td class="path"><input data-k="k2_so" value="Account (Consumer)"/></td>
+    <td class="path"><input data-k="k2_sp" value="vlocity_cmt__PrimaryContactId__r"/></td>
+    <td class="field"><input data-k="k2_sf" value="Name"/></td>
+    <td class="edit"><input data-k="k2_n" value="PF: Nombre+Apellido / PM: Razón Social del Consumer"/></td>
+    <td class="tmf"><input data-k="k2_tf" value="name"/></td>
+    <td class="edit"><textarea data-k="k2_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k2_cm" rows="2">Mandatory</textarea></td>
+    <td class="hdu-cell"><a class="hdu-link" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9372" target="_blank">TAC-9372</a> <a class="hdu-link" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9370" target="_blank">TAC-9370</a></td><td class="edit">CAMBIO: eliminar búsqueda Contact WHERE AccountId sin filtro de rol. PF → PrimaryContactId__r.Name. PM → Account.Name (Razón Social).</td>
+  </tr><tr class="row-change">
+    <td class="path"><input data-k="k3_so" value="Account (Billing)"/></td>
+    <td class="path"><input data-k="k3_sp" value=""/></td>
+    <td class="field"><input data-k="k3_sf" value="Name"/></td>
+    <td class="edit"><input data-k="k3_n" value="Razón Social / Nombre fiscal"/></td>
+    <td class="tmf"><input data-k="k3_tf" value="fiscalData.fiscalName"/></td>
+    <td class="edit"><textarea data-k="k3_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k3_cm" rows="2">Mandatory</textarea></td>
+    <td class="hdu-cell"><a class="hdu-link" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9372" target="_blank">TAC-9372</a> <a class="hdu-link" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9370" target="_blank">TAC-9370</a></td><td class="edit">CAMBIO: PF → PrimaryContactId__r.Name. PM → Account.Name (Razón Social del Consumer PM, no de Billing Account).</td>
+  </tr><tr>
+    <td class="path"><input data-k="k4_so" value="Account (Billing)"/></td>
+    <td class="path"><input data-k="k4_sp" value=""/></td>
+    <td class="field"><input data-k="k4_sf" value="TMX_VNT_RFC__c"/></td>
+    <td class="edit"><input data-k="k4_n" value=""/></td>
+    <td class="tmf"><input data-k="k4_tf" value="fiscalData.rfc"/></td>
+    <td class="edit"><textarea data-k="k4_lg" rows="2">Solo se mapea, no se construye</textarea></td>
+    <td class="edit"><textarea data-k="k4_cm" rows="2">Mandatory</textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k5_so" value="Account (Billing)"/></td>
+    <td class="path"><input data-k="k5_sp" value=""/></td>
+    <td class="field"><input data-k="k5_sf" value="TMX_VNT_Regimen_Fiscal__c"/></td>
+    <td class="edit"><input data-k="k5_n" value=""/></td>
+    <td class="tmf"><input data-k="k5_tf" value="fiscalData.fiscalRegime"/></td>
+    <td class="edit"><textarea data-k="k5_lg" rows="2">Primeros 3 dígitos</textarea></td>
+    <td class="edit"><textarea data-k="k5_cm" rows="2">Mandatory</textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k6_so" value="Account (Billing)"/></td>
+    <td class="path"><input data-k="k6_sp" value=""/></td>
+    <td class="field"><input data-k="k6_sf" value="TMX_VNT_Uso_de_CDFI__c"/></td>
+    <td class="edit"><input data-k="k6_n" value=""/></td>
+    <td class="tmf"><input data-k="k6_tf" value="fiscalData.useCFDI"/></td>
+    <td class="edit"><textarea data-k="k6_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k6_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k7_so" value="Account (Billing)"/></td>
+    <td class="path"><input data-k="k7_sp" value=""/></td>
+    <td class="field"><input data-k="k7_sf" value="TMX_VNT_Codigo_Postal_fiscal__c"/></td>
+    <td class="edit"><input data-k="k7_n" value=""/></td>
+    <td class="tmf"><input data-k="k7_tf" value="fiscalData.fiscalPostalCode"/></td>
+    <td class="edit"><textarea data-k="k7_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k7_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k8_so" value="Order"/></td>
+    <td class="path"><input data-k="k8_sp" value=""/></td>
+    <td class="field"><input data-k="k8_sf" value="TMX_OM_Concesionario__c"/></td>
+    <td class="edit"><input data-k="k8_n" value=""/></td>
+    <td class="tmf"><input data-k="k8_tf" value="region"/></td>
+    <td class="edit"><textarea data-k="k8_lg" rows="2">Constante MEX</textarea></td>
+    <td class="edit"><textarea data-k="k8_cm" rows="2">Mandatory</textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k9_so" value="Order"/></td>
+    <td class="path"><input data-k="k9_sp" value=""/></td>
+    <td class="field"><input data-k="k9_sf" value="OrderNumber"/></td>
+    <td class="edit"><input data-k="k9_n" value=""/></td>
+    <td class="tmf"><input data-k="k9_tf" value="nis"/></td>
+    <td class="edit"><textarea data-k="k9_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k9_cm" rows="2">Mandatory</textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k10_so" value="Order"/></td>
+    <td class="path"><input data-k="k10_sp" value=""/></td>
+    <td class="field"><input data-k="k10_sf" value="TMX_PVT_SiglasPISA__c"/></td>
+    <td class="edit"><input data-k="k10_n" value=""/></td>
+    <td class="tmf"><input data-k="k10_tf" value="office"/></td>
+    <td class="edit"><textarea data-k="k10_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k10_cm" rows="2">Mandatory</textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k11_so" value="Order"/></td>
+    <td class="path"><input data-k="k11_sp" value=""/></td>
+    <td class="field"><input data-k="k11_sf" value="TMX_PVT_CodigoCanalPISA__c"/></td>
+    <td class="edit"><input data-k="k11_n" value=""/></td>
+    <td class="tmf"><input data-k="k11_tf" value="channel"/></td>
+    <td class="edit"><textarea data-k="k11_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k11_cm" rows="2">Mandatory</textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k12_so" value="Order"/></td>
+    <td class="path"><input data-k="k12_sp" value="TMX_VNT_Usuario_Envio__r"/></td>
+    <td class="field"><input data-k="k12_sf" value="FederationIdentifier"/></td>
+    <td class="edit"><input data-k="k12_n" value=""/></td>
+    <td class="tmf"><input data-k="k12_tf" value="user"/></td>
+    <td class="edit"><textarea data-k="k12_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k12_cm" rows="2">Mandatory</textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k13_so" value="Order"/></td>
+    <td class="path"><input data-k="k13_sp" value=""/></td>
+    <td class="field"><input data-k="k13_sf" value="TMX_VNT_ReciboSinPapel__c"/></td>
+    <td class="edit"><input data-k="k13_n" value=""/></td>
+    <td class="tmf"><input data-k="k13_tf" value="paperless"/></td>
+    <td class="edit"><textarea data-k="k13_lg" rows="2">N / S</textarea></td>
+    <td class="edit"><textarea data-k="k13_cm" rows="2">Mandatory</textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr class="row-verify">
+    <td class="path"><input data-k="k14_so" value="Account (Service)"/></td>
+    <td class="path"><input data-k="k14_sp" value=""/></td>
+    <td class="field"><input data-k="k14_sf" value="Phone"/></td>
+    <td class="edit"><input data-k="k14_n" value=""/></td>
+    <td class="tmf"><input data-k="k14_tf" value="serviceAccounts.phone"/></td>
+    <td class="edit"><textarea data-k="k14_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k14_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"><a class="hdu-link verify" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9416" target="_blank">TAC-9416</a></td><td class="edit">Ya existente - confirmar TMF name</td>
+  </tr><tr class="row-verify">
+    <td class="path"><input data-k="k15_so" value="Account (Service)"/></td>
+    <td class="path"><input data-k="k15_sp" value=""/></td>
+    <td class="field"><input data-k="k15_sf" value="TMX_VNT_IdDomicilio__c"/></td>
+    <td class="edit"><input data-k="k15_n" value=""/></td>
+    <td class="tmf"><input data-k="k15_tf" value="serviceAccounts.installationAddress"/></td>
+    <td class="edit"><textarea data-k="k15_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k15_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"><a class="hdu-link verify" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9416" target="_blank">TAC-9416</a></td><td class="edit">Ya existente - confirmar TMF name</td>
+  </tr></tbody></table><div class="sec-title">POST — Productos / Service Order Items</div><table><thead><tr>
+  <th>Objeto SF</th><th>Path / Relación</th><th>Campo SF</th>
+  <th>Notas</th><th>Campo TMF (Target)</th><th>Lógica</th><th>Comentarios</th>
+  <th style="background:#b45309;">HDU</th><th style="background:#b45309;">Nota del cambio</th>
+</tr></thead><tbody><tr>
+    <td class="path"><input data-k="k0_so" value="Product"/></td>
+    <td class="path"><input data-k="k0_sp" value=""/></td>
+    <td class="field"><input data-k="k0_sf" value="portability characteristic"/></td>
+    <td class="edit"><input data-k="k0_n" value=""/></td>
+    <td class="tmf"><input data-k="k0_tf" value="serviceAccounts.portability"/></td>
+    <td class="edit"><textarea data-k="k0_lg" rows="2">N / S</textarea></td>
+    <td class="edit"><textarea data-k="k0_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k1_so" value="Product"/></td>
+    <td class="path"><input data-k="k1_sp" value=""/></td>
+    <td class="field"><input data-k="k1_sf" value="code"/></td>
+    <td class="edit"><input data-k="k1_n" value=""/></td>
+    <td class="tmf"><input data-k="k1_tf" value="serviceAccounts.products.code"/></td>
+    <td class="edit"><textarea data-k="k1_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k1_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k2_so" value="Product"/></td>
+    <td class="path"><input data-k="k2_sp" value=""/></td>
+    <td class="field"><input data-k="k2_sf" value="name"/></td>
+    <td class="edit"><input data-k="k2_n" value=""/></td>
+    <td class="tmf"><input data-k="k2_tf" value="serviceAccounts.products.name"/></td>
+    <td class="edit"><textarea data-k="k2_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k2_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k3_so" value="Product"/></td>
+    <td class="path"><input data-k="k3_sp" value=""/></td>
+    <td class="field"><input data-k="k3_sf" value="rate"/></td>
+    <td class="edit"><input data-k="k3_n" value=""/></td>
+    <td class="tmf"><input data-k="k3_tf" value="serviceAccounts.products.rate.value"/></td>
+    <td class="edit"><textarea data-k="k3_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k3_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k4_so" value="Product"/></td>
+    <td class="path"><input data-k="k4_sp" value=""/></td>
+    <td class="field"><input data-k="k4_sf" value="rateWithTax"/></td>
+    <td class="edit"><input data-k="k4_n" value=""/></td>
+    <td class="tmf"><input data-k="k4_tf" value="serviceAccounts.products.rateWithTax.value"/></td>
+    <td class="edit"><textarea data-k="k4_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k4_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k5_so" value="Product"/></td>
+    <td class="path"><input data-k="k5_sp" value=""/></td>
+    <td class="field"><input data-k="k5_sf" value="startDate"/></td>
+    <td class="edit"><input data-k="k5_n" value=""/></td>
+    <td class="tmf"><input data-k="k5_tf" value="serviceAccounts.products.startDate"/></td>
+    <td class="edit"><textarea data-k="k5_lg" rows="2">Formato yyyymmdd</textarea></td>
+    <td class="edit"><textarea data-k="k5_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k6_so" value="Product"/></td>
+    <td class="path"><input data-k="k6_sp" value=""/></td>
+    <td class="field"><input data-k="k6_sf" value="speedItem"/></td>
+    <td class="edit"><input data-k="k6_n" value=""/></td>
+    <td class="tmf"><input data-k="k6_tf" value="serviceAccounts.products.speedItem"/></td>
+    <td class="edit"><textarea data-k="k6_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k6_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k7_so" value="Constante (vacío)"/></td>
+    <td class="path"><input data-k="k7_sp" value=""/></td>
+    <td class="field"><input data-k="k7_sf" value=""/></td>
+    <td class="edit"><input data-k="k7_n" value=""/></td>
+    <td class="tmf"><input data-k="k7_tf" value="serviceAccounts.products.installmentPayment.numberPeriods"/></td>
+    <td class="edit"><textarea data-k="k7_lg" rows="2">Constante = 0</textarea></td>
+    <td class="edit"><textarea data-k="k7_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k8_so" value="Constante (vacío)"/></td>
+    <td class="path"><input data-k="k8_sp" value=""/></td>
+    <td class="field"><input data-k="k8_sf" value=""/></td>
+    <td class="edit"><input data-k="k8_n" value=""/></td>
+    <td class="tmf"><input data-k="k8_tf" value="serviceAccounts.products.installmentPayment.AppliedInstallmentPayment"/></td>
+    <td class="edit"><textarea data-k="k8_lg" rows="2">Constante = N</textarea></td>
+    <td class="edit"><textarea data-k="k8_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k9_so" value="Constante (vacío)"/></td>
+    <td class="path"><input data-k="k9_sp" value=""/></td>
+    <td class="field"><input data-k="k9_sf" value=""/></td>
+    <td class="edit"><input data-k="k9_n" value=""/></td>
+    <td class="tmf"><input data-k="k9_tf" value="serviceAccounts.products.promotions.code"/></td>
+    <td class="edit"><textarea data-k="k9_lg" rows="2">VACÍO</textarea></td>
+    <td class="edit"><textarea data-k="k9_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k10_so" value="Constante (vacío)"/></td>
+    <td class="path"><input data-k="k10_sp" value=""/></td>
+    <td class="field"><input data-k="k10_sf" value=""/></td>
+    <td class="edit"><input data-k="k10_n" value=""/></td>
+    <td class="tmf"><input data-k="k10_tf" value="serviceAccounts.products.promotions.name"/></td>
+    <td class="edit"><textarea data-k="k10_lg" rows="2">VACÍO</textarea></td>
+    <td class="edit"><textarea data-k="k10_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k11_so" value="Constante (vacío)"/></td>
+    <td class="path"><input data-k="k11_sp" value=""/></td>
+    <td class="field"><input data-k="k11_sf" value=""/></td>
+    <td class="edit"><input data-k="k11_n" value=""/></td>
+    <td class="tmf"><input data-k="k11_tf" value="serviceAccounts.products.promotions.calculateBonus"/></td>
+    <td class="edit"><textarea data-k="k11_lg" rows="2">Constante = N</textarea></td>
+    <td class="edit"><textarea data-k="k11_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k12_so" value="Constante (vacío)"/></td>
+    <td class="path"><input data-k="k12_sp" value=""/></td>
+    <td class="field"><input data-k="k12_sf" value=""/></td>
+    <td class="edit"><input data-k="k12_n" value=""/></td>
+    <td class="tmf"><input data-k="k12_tf" value="serviceAccounts.products.promotions.discountPercentage"/></td>
+    <td class="edit"><textarea data-k="k12_lg" rows="2">Constante = 0</textarea></td>
+    <td class="edit"><textarea data-k="k12_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr></tbody></table></div><div class="pane" data-id="t1">
+<div class="sec-title">PATCH /partyAccount &mdash; Homologar Cuenta y Assets en PISA</div>
+<div style="margin:8px 0 12px;padding:10px 14px;background:#fef9c3;border-left:4px solid #f59e0b;border-radius:0 6px 6px 0;font-size:12px">
+  <strong>Contrato:</strong> TMF666 MuleSoft v1.1 &mdash; DataRaptor propio (distinto del POST de Envio a Facturacion).
+  Campos nuevos TAC-9416: <strong>Consumer id + CUC, Billing billingCode, Service addressId, Contacto, Billing Group, Suscripcion, Assets con estructura nueva (assetId / assetUniqueKey / assetBillingCode)</strong>.
+  La seccion <code>products[]</code> (voiceAssetId / dataAssetId) <strong>desaparece</strong> y es reemplazada por <code>assets[]</code>.
+</div>
+
+<div class="sec-title">Seccion: order</div>
+<table><thead><tr>
+  <th>Objeto SF</th><th>Path / Relacion</th><th>Campo SF</th>
+  <th>Notas</th><th>Campo TMF (Target)</th><th>Logica</th><th>Comentarios</th>
+  <th style="background:#b45309;">HDU</th><th style="background:#b45309;">Estado</th>
+</tr></thead><tbody>
+<tr>
+  <td class="path"><input data-k="o0_so" value="Order"/></td>
+  <td class="path"><input data-k="o0_sp" value=""/></td>
+  <td class="field"><input data-k="o0_sf" value="OrderNumber"/></td>
+  <td class="edit"><input data-k="o0_n" value="NIS / numero de orden"/></td>
+  <td class="tmf"><input data-k="o0_tf" value="order.number"/></td>
+  <td class="edit"><textarea data-k="o0_lg" rows="2"></textarea></td>
+  <td class="edit"><textarea data-k="o0_cm" rows="2"></textarea></td>
+  <td class="hdu-cell"></td>
+  <td class="edit">Existente</td>
+</tr>
+<tr>
+  <td class="path"><input data-k="o1_so" value="Order"/></td>
+  <td class="path"><input data-k="o1_sp" value=""/></td>
+  <td class="field"><input data-k="o1_sf" value="TMX_VNT_RequierePortabilidad__c"/></td>
+  <td class="edit"><input data-k="o1_n" value="true si porta requerida"/></td>
+  <td class="tmf"><input data-k="o1_tf" value="order.portaRequired"/></td>
+  <td class="edit"><textarea data-k="o1_lg" rows="2">boolean</textarea></td>
+  <td class="edit"><textarea data-k="o1_cm" rows="2"></textarea></td>
+  <td class="hdu-cell"></td>
+  <td class="edit">Existente</td>
+</tr>
+</tbody></table>
+
+<div class="sec-title">Seccion: accounts[] &mdash; Billing, Service, Consumer, Contact, BillingGroup, Subscription</div>
+<table><thead><tr>
+  <th>Objeto SF</th><th>Path / Relacion</th><th>Campo SF</th>
+  <th>Notas</th><th>Campo TMF (Target)</th><th>Logica</th><th>Comentarios</th>
+  <th style="background:#b45309;">HDU</th><th style="background:#b45309;">Estado</th>
+</tr></thead><tbody>
+<tr>
+  <td class="path"><input data-k="ab0_so" value="Account (Billing)"/></td>
+  <td class="path"><input data-k="ab0_sp" value="accounts[type=Billing]"/></td>
+  <td class="field"><input data-k="ab0_sf" value="Id"/></td>
+  <td class="edit"><input data-k="ab0_n" value="SF Id del Billing Account"/></td>
+  <td class="tmf"><input data-k="ab0_tf" value="accounts[].id  (type=Billing)"/></td>
+  <td class="edit"><textarea data-k="ab0_lg" rows="2">Salesforce Id</textarea></td>
+  <td class="edit"><textarea data-k="ab0_cm" rows="2"></textarea></td>
+  <td class="hdu-cell"></td>
+  <td class="edit">Existente</td>
+</tr>
+<tr>
+  <td class="path"><input data-k="ab1_so" value="Account (Billing)"/></td>
+  <td class="path"><input data-k="ab1_sp" value="accounts[type=Billing]"/></td>
+  <td class="field"><input data-k="ab1_sf" value="Phone"/></td>
+  <td class="edit"><input data-k="ab1_n" value=""/></td>
+  <td class="tmf"><input data-k="ab1_tf" value="accounts[].billingPhone  (type=Billing)"/></td>
+  <td class="edit"><textarea data-k="ab1_lg" rows="2"></textarea></td>
+  <td class="edit"><textarea data-k="ab1_cm" rows="2"></textarea></td>
+  <td class="hdu-cell"></td>
+  <td class="edit">Existente</td>
+</tr>
+<tr class="row-change">
+  <td class="path"><input data-k="ab2_so" value="Account (Billing)"/></td>
+  <td class="path"><input data-k="ab2_sp" value="accounts[type=Billing]"/></td>
+  <td class="field"><input data-k="ab2_sf" value="TMX_OM_PisaBillingAccount_Id__c"/></td>
+  <td class="edit"><input data-k="ab2_n" value="External ID PISA del Billing Account"/></td>
+  <td class="tmf"><input data-k="ab2_tf" value="accounts[].billingCode  (type=Billing)"/></td>
+  <td class="edit"><textarea data-k="ab2_lg" rows="2"></textarea></td>
+  <td class="edit"><textarea data-k="ab2_cm" rows="2"></textarea></td>
+  <td class="hdu-cell"><a class="hdu-link" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9416" target="_blank">TAC-9416</a></td>
+  <td class="edit">NUEVO</td>
+</tr>
+<tr>
+  <td class="path"><input data-k="as0_so" value="Account (Service)"/></td>
+  <td class="path"><input data-k="as0_sp" value="accounts[type=Service]"/></td>
+  <td class="field"><input data-k="as0_sf" value="Id"/></td>
+  <td class="edit"><input data-k="as0_n" value="SF Id del Service Account"/></td>
+  <td class="tmf"><input data-k="as0_tf" value="accounts[].id  (type=Service)"/></td>
+  <td class="edit"><textarea data-k="as0_lg" rows="2">Salesforce Id</textarea></td>
+  <td class="edit"><textarea data-k="as0_cm" rows="2"></textarea></td>
+  <td class="hdu-cell"></td>
+  <td class="edit">Existente</td>
+</tr>
+<tr>
+  <td class="path"><input data-k="as1_so" value="Account (Service)"/></td>
+  <td class="path"><input data-k="as1_sp" value="accounts[type=Service]"/></td>
+  <td class="field"><input data-k="as1_sf" value="Phone"/></td>
+  <td class="edit"><input data-k="as1_n" value=""/></td>
+  <td class="tmf"><input data-k="as1_tf" value="accounts[].phone  (type=Service)"/></td>
+  <td class="edit"><textarea data-k="as1_lg" rows="2"></textarea></td>
+  <td class="edit"><textarea data-k="as1_cm" rows="2"></textarea></td>
+  <td class="hdu-cell"></td>
+  <td class="edit">Existente</td>
+</tr>
+<tr>
+  <td class="path"><input data-k="as2_so" value="Account (Service)"/></td>
+  <td class="path"><input data-k="as2_sp" value="accounts[type=Service]"/></td>
+  <td class="field"><input data-k="as2_sf" value="TMX_VNT_IdDomicilio__c"/></td>
+  <td class="edit"><input data-k="as2_n" value="Biblioteca / libreria de la orden"/></td>
+  <td class="tmf"><input data-k="as2_tf" value="accounts[].librery  (type=Service)"/></td>
+  <td class="edit"><textarea data-k="as2_lg" rows="2"></textarea></td>
+  <td class="edit"><textarea data-k="as2_cm" rows="2"></textarea></td>
+  <td class="hdu-cell"></td>
+  <td class="edit">Existente</td>
+</tr>
+<tr class="row-change">
+  <td class="path"><input data-k="as3_so" value="Account (Service)"/></td>
+  <td class="path"><input data-k="as3_sp" value="accounts[type=Service]"/></td>
+  <td class="field"><input data-k="as3_sf" value="TMX_VNT_IdDomicilio__c"/></td>
+  <td class="edit"><input data-k="as3_n" value="External ID PISA del Service Account (Id Domicilio)"/></td>
+  <td class="tmf"><input data-k="as3_tf" value="accounts[].addressId  (type=Service)"/></td>
+  <td class="edit"><textarea data-k="as3_lg" rows="2">TMX_VNT_IdDomicilio__c = External ID de la Service Account</textarea></td>
+  <td class="edit"><textarea data-k="as3_cm" rows="2"></textarea></td>
+  <td class="hdu-cell"><a class="hdu-link" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9416" target="_blank">TAC-9416</a></td>
+  <td class="edit">NUEVO</td>
+</tr>
+<tr class="row-change">
+  <td class="path"><input data-k="ac0_so" value="Account (Consumer)"/></td>
+  <td class="path"><input data-k="ac0_sp" value="accounts[type=Consumer]"/></td>
+  <td class="field"><input data-k="ac0_sf" value="Id"/></td>
+  <td class="edit"><input data-k="ac0_n" value="SF Id del Consumer Account"/></td>
+  <td class="tmf"><input data-k="ac0_tf" value="accounts[].id  (type=Consumer)"/></td>
+  <td class="edit"><textarea data-k="ac0_lg" rows="2">Salesforce Id</textarea></td>
+  <td class="edit"><textarea data-k="ac0_cm" rows="2"></textarea></td>
+  <td class="hdu-cell"><a class="hdu-link" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9416" target="_blank">TAC-9416</a></td>
+  <td class="edit">NUEVO</td>
+</tr>
+<tr class="row-change">
+  <td class="path"><input data-k="ac1_so" value="Account (Consumer)"/></td>
+  <td class="path"><input data-k="ac1_sp" value="accounts[type=Consumer]"/></td>
+  <td class="field"><input data-k="ac1_sf" value="TMX_OM_CUC__c"/></td>
+  <td class="edit"><input data-k="ac1_n" value="CUC del cliente en PISA"/></td>
+  <td class="tmf"><input data-k="ac1_tf" value="accounts[].cuc  (type=Consumer)"/></td>
+  <td class="edit"><textarea data-k="ac1_lg" rows="2">External ID PISA del Consumer</textarea></td>
+  <td class="edit"><textarea data-k="ac1_cm" rows="2"></textarea></td>
+  <td class="hdu-cell"><a class="hdu-link" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9416" target="_blank">TAC-9416</a></td>
+  <td class="edit">NUEVO</td>
+</tr>
+<tr class="row-change">
+  <td class="path"><input data-k="ak0_so" value="Contact"/></td>
+  <td class="path"><input data-k="ak0_sp" value="accounts[type=Consumer]"/></td>
+  <td class="field"><input data-k="ak0_sf" value="Id"/></td>
+  <td class="edit"><input data-k="ak0_n" value="SF Id del Contacto principal"/></td>
+  <td class="tmf"><input data-k="ak0_tf" value="accounts[].contactId  (type=Consumer)"/></td>
+  <td class="edit"><textarea data-k="ak0_lg" rows="2">Account.vlocity_cmt__PrimaryContactId__c</textarea></td>
+  <td class="edit"><textarea data-k="ak0_cm" rows="2"></textarea></td>
+  <td class="hdu-cell"><a class="hdu-link" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9416" target="_blank">TAC-9416</a></td>
+  <td class="edit">NUEVO</td>
+</tr>
+<tr class="row-change">
+  <td class="path"><input data-k="ak1_so" value="Contact"/></td>
+  <td class="path"><input data-k="ak1_sp" value="accounts[type=Consumer]"/></td>
+  <td class="field"><input data-k="ak1_sf" value="TMX_VNT_NumeroTelefonico__c"/></td>
+  <td class="edit"><input data-k="ak1_n" value="Numero telefonico del contacto"/></td>
+  <td class="tmf"><input data-k="ak1_tf" value="accounts[].contactPhone  (type=Consumer)"/></td>
+  <td class="edit"><textarea data-k="ak1_lg" rows="2"></textarea></td>
+  <td class="edit"><textarea data-k="ak1_cm" rows="2"></textarea></td>
+  <td class="hdu-cell"><a class="hdu-link" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9416" target="_blank">TAC-9416</a></td>
+  <td class="edit">NUEVO</td>
+</tr>
+<tr class="row-change">
+  <td class="path"><input data-k="ag0_so" value="TMX_CROSS_GrupoFacturacion__c"/></td>
+  <td class="path"><input data-k="ag0_sp" value="accounts[type=BillingGroup]"/></td>
+  <td class="field"><input data-k="ag0_sf" value="Id"/></td>
+  <td class="edit"><input data-k="ag0_n" value="SF Id del Billing Group"/></td>
+  <td class="tmf"><input data-k="ag0_tf" value="accounts[].id  (type=BillingGroup)"/></td>
+  <td class="edit"><textarea data-k="ag0_lg" rows="2">Salesforce Id</textarea></td>
+  <td class="edit"><textarea data-k="ag0_cm" rows="2"></textarea></td>
+  <td class="hdu-cell"><a class="hdu-link" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9416" target="_blank">TAC-9416</a></td>
+  <td class="edit">NUEVO</td>
+</tr>
+<tr class="row-change">
+  <td class="path"><input data-k="ag1_so" value="TMX_CROSS_GrupoFacturacion__c"/></td>
+  <td class="path"><input data-k="ag1_sp" value="accounts[type=BillingGroup]"/></td>
+  <td class="field"><input data-k="ag1_sf" value="TMX_OM_Pisa_BillingAccount_Id__c"/></td>
+  <td class="edit"><input data-k="ag1_n" value="External ID PISA del Billing Group"/></td>
+  <td class="tmf"><input data-k="ag1_tf" value="accounts[].billingGroupCode  (type=BillingGroup)"/></td>
+  <td class="edit"><textarea data-k="ag1_lg" rows="2">Puede estar vacio si aun no fue homologado con PISA</textarea></td>
+  <td class="edit"><textarea data-k="ag1_cm" rows="2"></textarea></td>
+  <td class="hdu-cell"><a class="hdu-link" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9416" target="_blank">TAC-9416</a></td>
+  <td class="edit">NUEVO</td>
+</tr>
+<tr class="row-change">
+  <td class="path"><input data-k="au0_so" value="vlocity_cmt__Subscription__c"/></td>
+  <td class="path"><input data-k="au0_sp" value="accounts[type=Subscription]"/></td>
+  <td class="field"><input data-k="au0_sf" value="Id"/></td>
+  <td class="edit"><input data-k="au0_n" value="SF Id de la Suscripcion"/></td>
+  <td class="tmf"><input data-k="au0_tf" value="accounts[].id  (type=Subscription)"/></td>
+  <td class="edit"><textarea data-k="au0_lg" rows="2">Salesforce Id</textarea></td>
+  <td class="edit"><textarea data-k="au0_cm" rows="2"></textarea></td>
+  <td class="hdu-cell"><a class="hdu-link" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9416" target="_blank">TAC-9416</a></td>
+  <td class="edit">NUEVO</td>
+</tr>
+<tr class="row-change">
+  <td class="path"><input data-k="au1_so" value="vlocity_cmt__Subscription__c"/></td>
+  <td class="path"><input data-k="au1_sp" value="accounts[type=Subscription]"/></td>
+  <td class="field"><input data-k="au1_sf" value="vlocity_cmt__SubscriptionNumber__c"/></td>
+  <td class="edit"><input data-k="au1_n" value="Numero de servicio PISA (External ID)"/></td>
+  <td class="tmf"><input data-k="au1_tf" value="accounts[].subscriptionNumber  (type=Subscription)"/></td>
+  <td class="edit"><textarea data-k="au1_lg" rows="2"></textarea></td>
+  <td class="edit"><textarea data-k="au1_cm" rows="2"></textarea></td>
+  <td class="hdu-cell"><a class="hdu-link" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9416" target="_blank">TAC-9416</a></td>
+  <td class="edit">NUEVO</td>
+</tr>
+</tbody></table>
+
+<div class="sec-title">Seccion: assets[] &mdash; NUEVO (reemplaza products[].voiceAssetId / dataAssetId)</div>
+<table><thead><tr>
+  <th>Objeto SF</th><th>Path / Relacion</th><th>Campo SF</th>
+  <th>Notas</th><th>Campo TMF (Target)</th><th>Logica</th><th>Comentarios</th>
+  <th style="background:#b45309;">HDU</th><th style="background:#b45309;">Estado</th>
+</tr></thead><tbody>
+<tr class="row-change">
+  <td class="path"><input data-k="ad0_so" value="Asset"/></td>
+  <td class="path"><input data-k="ad0_sp" value="assets[]"/></td>
+  <td class="field"><input data-k="ad0_sf" value="Id"/></td>
+  <td class="edit"><input data-k="ad0_n" value="SF Id del Asset"/></td>
+  <td class="tmf"><input data-k="ad0_tf" value="assets[].assetId"/></td>
+  <td class="edit"><textarea data-k="ad0_lg" rows="2">Salesforce Id del Asset</textarea></td>
+  <td class="edit"><textarea data-k="ad0_cm" rows="2"></textarea></td>
+  <td class="hdu-cell"><a class="hdu-link" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9416" target="_blank">TAC-9416</a></td>
+  <td class="edit">NUEVO — reemplaza voiceAssetId/dataAssetId</td>
+</tr>
+<tr class="row-change">
+  <td class="path"><input data-k="ad1_so" value="Asset"/></td>
+  <td class="path"><input data-k="ad1_sp" value="assets[]"/></td>
+  <td class="field"><input data-k="ad1_sf" value="TMX_CROSS_LlaveUnica__c"/></td>
+  <td class="edit"><input data-k="ad1_n" value="Llave unica del Asset (Numero Servicio + Codigo Facturacion)"/></td>
+  <td class="tmf"><input data-k="ad1_tf" value="assets[].assetUniqueKey"/></td>
+  <td class="edit"><textarea data-k="ad1_lg" rows="2">Numero de Servicio + codigo de facturacion del atributo del producto</textarea></td>
+  <td class="edit"><textarea data-k="ad1_cm" rows="2"></textarea></td>
+  <td class="hdu-cell"><a class="hdu-link" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9416" target="_blank">TAC-9416</a></td>
+  <td class="edit">NUEVO</td>
+</tr>
+<tr class="row-change">
+  <td class="path"><input data-k="ad2_so" value="Asset"/></td>
+  <td class="path"><input data-k="ad2_sp" value="assets[]"/></td>
+  <td class="field"><input data-k="ad2_sf" value="TMX_CROSS_ProductoBUC__c o atributo"/></td>
+  <td class="edit"><input data-k="ad2_n" value="Codigo de facturacion del producto (billing code)"/></td>
+  <td class="tmf"><input data-k="ad2_tf" value="assets[].assetBillingCode"/></td>
+  <td class="edit"><textarea data-k="ad2_lg" rows="2">Atributo ATT_CODIGO_FACTURACION del catalogo EPC</textarea></td>
+  <td class="edit"><textarea data-k="ad2_cm" rows="2">Confirmar campo fuente con OM</textarea></td>
+  <td class="hdu-cell"><a class="hdu-link" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9416" target="_blank">TAC-9416</a></td>
+  <td class="edit">NUEVO</td>
+</tr>
+</tbody></table>
+</div>
+<script>
+const KEY = location.pathname.split('/').pop().replace('.html','');
+function save(){
+  const d={};
+  document.querySelectorAll('[data-k]').forEach(el=>{ d[el.dataset.k]=el.value; });
+  localStorage.setItem(KEY,JSON.stringify(d));
+  const b=document.querySelector('.btn-save');
+  b.classList.add('saved'); b.textContent='✅ Guardado';
+  document.querySelector('.status').textContent='Guardado: '+new Date().toLocaleTimeString('es-MX');
+  setTimeout(()=>{ b.classList.remove('saved'); b.textContent='💾 Guardar'; },1800);
+}
+function load(){
+  const raw=localStorage.getItem(KEY);
+  if(!raw) return;
+  const d=JSON.parse(raw);
+  document.querySelectorAll('[data-k]').forEach(el=>{ if(d[el.dataset.k]!=null) el.value=d[el.dataset.k]; });
+}
+function exportCSV(){
+  let csv='Objeto SF,Path SF,Campo SF,Notas,Campo TMF,Lógica,Comentarios,HDU Cambio,Nota Cambio\n';
+  document.querySelectorAll('table tbody tr').forEach(tr=>{
+    const cells=[...tr.querySelectorAll('td')].map(td=>{
+      const inp=td.querySelector('[data-k]');
+      return '"'+((inp?inp.value:td.innerText)||'').replace(/"/g,"'").replace(/\n/g,' ')+'"';
+    });
+    if(cells.length>1) csv+=cells.join(',')+' \n';
+  });
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download=KEY+'.csv'; a.click();
+}
+function tab(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.id===id));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active', p.dataset.id===id));
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  load();
+  document.querySelectorAll('[data-k]').forEach(el=>{
+    el.addEventListener('input',()=>{ el.closest('tr')?.classList.add('user-changed'); });
+  });
+});
+</script></body></html>

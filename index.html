@@ -3,47 +3,679 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TELMEX OM | Portal de Presentaciones</title>
+  <title>Squad OM</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
-  <header>
-    <div class="container">
-      <span class="eyebrow">TELMEX OM</span>
-      <h1>Portal de Presentaciones</h1>
-      <p>Presentaciones y documentación del proyecto OM, organizadas por categoría.</p>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="assets/img/salesforce-logo.webp" alt="Salesforce">
+        <span>Squad OM</span>
+      </div>
+      <nav>
+        <button class="nav-item active" data-section="all">Inicio</button>
+        <button class="nav-item" data-section="docs">Documentación</button>
+        <button class="nav-item" data-section="dudas">Dudas</button>
+        <button class="nav-item" data-section="notas">Notas y Grabaciones</button>
+        <button class="nav-item" data-section="sprint-1">Sprint 1</button>
+        <button class="nav-item" data-section="sprint-2">Sprint 2</button>
+        <button class="nav-item" data-section="sprint-3">Sprint 3</button>
+        <button class="nav-item" data-section="sprint-4">Sprint 4</button>
+        <button class="nav-item" data-section="sprint-5">Sprint 5</button>
+        <button class="nav-item" data-section="flujo">Flujo OM/Salesforce</button>
+      </nav>
+    </aside>
+
+    <div class="content">
+      <header class="topbar">
+        <h1 id="section-title">Inicio</h1>
+      </header>
+
+      <section class="bento">
+        <div class="tile hero home-only">
+          <h2>Squad OM</h2>
+          <p>Seguimiento del squad: estado del sprint, documentación, refinamientos y acuerdos del proyecto.</p>
+        </div>
+
+        <a class="tile white sprint home-only" id="sprint-link" target="_blank" rel="noopener">
+          <span class="label">Sprint actual</span>
+          <strong id="sprint-name"></strong>
+          <span class="hint" id="sprint-dates"></span>
+          <div class="progress"><div id="sprint-progress"></div></div>
+          <span class="hint" id="sprint-total"></span>
+          <span class="jira-link">Abrir tablero en Jira &rarr;</span>
+        </a>
+
+        <div class="tile soft board home-only">
+          <div class="board-head">
+            <span class="label">Tablero del sprint</span>
+            <span class="hint" id="board-updated"></span>
+          </div>
+          <div class="columns" id="board-columns"></div>
+        </div>
+
+        <div class="tile white stories home-only">
+          <div class="board-head">
+            <span class="label">Historias de usuario del sprint</span>
+            <div class="chips" id="assignee-filter"></div>
+          </div>
+          <table>
+            <thead>
+              <tr><th>HDU</th><th>Resumen</th><th>Responsable</th><th>Estado</th><th>SP</th></tr>
+            </thead>
+            <tbody id="stories-body"></tbody>
+          </table>
+        </div>
+
+        <div class="tile hero docs-intro docs-only" hidden>
+          <span class="eyebrow">Centro de documentación</span>
+          <h2>Todo lo que el squad necesita para construir OM</h2>
+          <p>Aquí reunimos las fuentes oficiales del proyecto: diseños funcionales y técnicos, carpetas de cada fase, diagramas de arquitectura y los mappings de las APIs TMF. Antes de refinar o desarrollar una HDU, valida aquí la versión vigente del documento para que TELMEX y Salesforce trabajen siempre sobre la misma información.</p>
+          <div class="intro-tags">
+            <span>Diseño funcional y técnico</span>
+            <span>Mappings TMF</span>
+            <span>Diagramas</span>
+            <span>Fase 2</span>
+          </div>
+        </div>
+
+        <div class="tile white links docs-only" hidden>
+          <span class="label">Mappings de APIs TMF</span>
+          <p class="hint">Tablas de mapeo Salesforce ↔ TMF editables. Los cambios que guardes se quedan en tu navegador; usa “CSV” para compartirlos.</p>
+          <div class="link-grid">
+            <!-- Para agregar un mapping, sube el HTML a docs/mappings/ y copia este bloque -->
+            <a class="link-card" href="docs/mappings/mapping-TMF641-R2.html">
+              <img src="assets/img/salesforce-logo.webp" alt="Salesforce">
+              <div>
+                <h3>TMF641 — Mapping R2</h3>
+                <span>Service Ordering · Main, Portabilidad, Callback</span>
+              </div>
+            </a>
+            <a class="link-card" href="docs/mappings/mapping-TMF666-R1.html">
+              <img src="assets/img/salesforce-logo.webp" alt="Salesforce">
+              <div>
+                <h3>TMF666 — Mapping R1 vTMX</h3>
+                <span>Account Management · POST / PATCH partyAccount</span>
+              </div>
+            </a>
+            <a class="link-card" href="docs/mappings/mapping-TMF681.html">
+              <img src="assets/img/salesforce-logo.webp" alt="Salesforce">
+              <div>
+                <h3>TMF681 — Mapping DataRaptor</h3>
+                <span>Communication · Servicio Base, OTT</span>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="tile soft links docs-only" hidden>
+          <span class="label">Enlaces del proyecto</span>
+          <div class="link-grid">
+            <!-- Para agregar un enlace, copia este bloque y actualiza href, icono (drive | lucid | notebooklm), título y descripción -->
+            <a class="link-card" href="https://lucid.app/lucidchart/f2b0cb66-e54c-416b-9128-77f10238afb1/edit?user_id=206879571&amp;invitationId=inv_a629b492-7d39-47ea-86e1-f7d4163a72ff&amp;page=UT3M6c8F5GsA#" target="_blank" rel="noopener">
+              <img src="assets/img/icons/lucid.png" alt="">
+              <div>
+                <h3>Lucid del equipo de Catálogo</h3>
+                <span>Lucidchart</span>
+              </div>
+            </a>
+            <a class="link-card" href="https://drive.google.com/drive/folders/1D8o0hyQPTKaiJArnRiRSShhDsQjjsj1C" target="_blank" rel="noopener">
+              <img src="assets/img/icons/drive.png" alt="">
+              <div>
+                <h3>Fase 2 General</h3>
+                <span>Carpeta de Google Drive</span>
+              </div>
+            </a>
+            <a class="link-card" href="https://drive.google.com/drive/folders/1MDmqBkxni15v6vnJmW6UDdCBZqPm4vzf" target="_blank" rel="noopener">
+              <img src="assets/img/icons/drive.png" alt="">
+              <div>
+                <h3>Fase 2 OM</h3>
+                <span>Carpeta de Google Drive</span>
+              </div>
+            </a>
+            <a class="link-card" href="https://drive.google.com/file/d/1k0Aqw_XYsECRxvpocY5QFa1UdN1u_EFB/view" target="_blank" rel="noopener">
+              <img src="assets/img/icons/drive.png" alt="">
+              <div>
+                <h3>Diseño Funcional y Técnico R1 2025</h3>
+                <span>Documento en Google Drive</span>
+              </div>
+            </a>
+            <a class="link-card" href="https://notebook.google.com/notebook/d6c3126c-c386-47ee-8334-121d4ec88abd" target="_blank" rel="noopener">
+              <img src="assets/img/icons/notebooklm.png" alt="">
+              <div>
+                <h3>NotebookLM</h3>
+                <span>Cuaderno del proyecto</span>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="tile hero docs-intro sprint-1-only" hidden>
+          <span class="eyebrow">Sprint cerrado · 2 nov – 21 nov 2026</span>
+          <h2>OM Sprint 1: entregado</h2>
+          <p id="s1-summary"></p>
+        </div>
+
+        <div class="tile white links sprint-1-only" hidden>
+          <span class="label">Story map</span>
+          <div class="link-grid">
+            <a class="link-card" href="docs/sprints/story-map-om-sprint1.html">
+              <span class="ref-icon" style="background:#5374b9">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="5" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="3" y="11" width="7" height="5" rx="1"/><rect x="14" y="11" width="7" height="5" rx="1"/><path d="M3 20h18"/></svg>
+              </span>
+              <div>
+                <h3>Story Map · OM Sprint 1</h3>
+                <span>HDUs entregadas por fase del flujo OM</span>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="tile white stories sprint-1-only" hidden>
+          <div class="board-head">
+            <span class="label">HDUs entregadas</span>
+            <div class="chips" id="s1-filter"></div>
+          </div>
+          <table>
+            <thead>
+              <tr><th>HDU</th><th>Resumen</th><th>Responsable</th><th>Estado</th><th>SP</th></tr>
+            </thead>
+            <tbody id="s1-body"></tbody>
+          </table>
+        </div>
+
+        <div class="tile hero docs-intro sprint-2-only" hidden>
+          <span class="eyebrow" id="s2-eyebrow"></span>
+          <h2>OM Sprint 2: en progreso</h2>
+          <p id="s2-summary"></p>
+        </div>
+
+        <div class="tile soft board sprint-2-only" hidden>
+          <div class="board-head">
+            <span class="label">Tablero del sprint</span>
+            <span class="hint" id="s2-updated"></span>
+          </div>
+          <div class="columns" id="s2-columns"></div>
+        </div>
+
+        <div class="tile white stories sprint-2-only" hidden>
+          <div class="board-head">
+            <span class="label">Historias de usuario del sprint</span>
+            <div class="chips" id="s2-filter"></div>
+          </div>
+          <table>
+            <thead>
+              <tr><th>HDU</th><th>Resumen</th><th>Responsable</th><th>Estado</th><th>SP</th></tr>
+            </thead>
+            <tbody id="s2-body"></tbody>
+          </table>
+        </div>
+
+        <div class="tile hero docs-intro sprint-3-only" hidden>
+          <span class="eyebrow">Próximo sprint · 14 dic 2026 – 2 ene 2027</span>
+          <h2>OM Sprint 3: refinamientos</h2>
+          <p>Documentos de refinamiento de los nuevos productos y escenarios que el squad analiza con TELMEX para construir en el Sprint 3.</p>
+        </div>
+
+        <div class="tile white links sprint-3-only" hidden>
+          <span class="label">Refinamientos</span>
+          <div class="link-grid">
+            <!-- Para agregar un refinamiento, sube el HTML a docs/refinamientos/ y copia este bloque -->
+            <a class="link-card" href="docs/refinamientos/gastos-de-instalacion.html">
+              <span class="ref-icon" style="background:#b45309">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/><path d="M17 15v6M14 18h6"/></svg>
+              </span>
+              <div>
+                <h3>Refinamiento Gastos de Instalación</h3>
+                <span>Cargos por instalación del servicio</span>
+              </div>
+            </a>
+            <a class="link-card" href="docs/refinamientos/internet-simetrico.html">
+              <span class="ref-icon" style="background:#0369a1">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20V4M3 8l4-4 4 4"/><path d="M17 4v16M13 16l4 4 4-4"/></svg>
+              </span>
+              <div>
+                <h3>Refinamiento Internet Simétrico</h3>
+                <span>Misma velocidad de subida y bajada</span>
+              </div>
+            </a>
+            <a class="link-card" href="docs/refinamientos/lineas-adicionales.html">
+              <span class="ref-icon" style="background:#065f46">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/><path d="M18 2v6M15 5h6"/></svg>
+              </span>
+              <div>
+                <h3>Refinamiento Líneas Adicionales</h3>
+                <span>Alta de líneas telefónicas extra</span>
+              </div>
+            </a>
+            <a class="link-card" href="docs/refinamientos/solo-voz.html">
+              <span class="ref-icon" style="background:#5b21b6">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3"/></svg>
+              </span>
+              <div>
+                <h3>Refinamiento Solo Voz</h3>
+                <span>Paquete de telefonía sin internet</span>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="tile hero docs-intro dudas-only" hidden>
+          <span class="eyebrow">Seguimiento compartido</span>
+          <h2>Dudas del proyecto</h2>
+          <p>Preguntas abiertas entre TELMEX y el squad: qué se preguntó, en qué sprint, qué se ha comentado y si ya quedó resuelta. Cada cambio se guarda en el Google Sheet del proyecto y se refleja para todos en segundos.</p>
+          <div class="notes-stats notes-live">
+            <span><strong id="dudas-open">–</strong> abiertas</span>
+            <span><strong id="dudas-closed">–</strong> cerradas</span>
+            <span class="notes-sync">Conectando…</span>
+          </div>
+        </div>
+
+        <div class="tile white dudas-only notes-setup" hidden>
+          <span class="label">Configuración pendiente</span>
+          <p>Esta sección aún no está conectada al Google Sheet. Sigue los pasos de <code>README.md</code> &gt; “Dudas, Notas y Grabaciones” y pega la URL de la Web App en <code>assets/data/notas-config.js</code>.</p>
+        </div>
+
+        <div class="tile white stories dudas-only notes-live" hidden>
+          <div class="board-head">
+            <span class="label">Dudas</span>
+            <div class="chips" id="dudas-status-filter"></div>
+          </div>
+          <div class="chips" id="dudas-sprint-filter"></div>
+          <table class="notes-table">
+            <thead>
+              <tr><th>Tema</th><th>Sprint</th><th>Descripción</th><th>Comentarios</th><th>Status</th><th>Actualizado</th><th></th></tr>
+            </thead>
+            <tbody id="dudas-body"><tr><td colspan="7" class="muted">Cargando…</td></tr></tbody>
+          </table>
+
+          <form id="duda-form" class="notes-form">
+            <span class="label">Agregar duda</span>
+            <div class="form-row">
+              <input name="tema" placeholder="Tema" required maxlength="200">
+              <select name="sprint" class="sprint-select"></select>
+            </div>
+            <textarea name="descripcion" placeholder="Descripción" rows="2" required></textarea>
+            <textarea name="comentarios" placeholder="Comentarios (opcional)" rows="2"></textarea>
+            <div class="form-row">
+              <input class="team-key" type="password" placeholder="Clave del equipo" autocomplete="off">
+              <button type="button" class="chip form-cancel" hidden>Cancelar</button>
+              <button type="submit" class="primary-btn">Agregar duda</button>
+            </div>
+            <span class="notes-message"></span>
+          </form>
+        </div>
+
+        <div class="tile hero docs-intro notas-only" hidden>
+          <span class="eyebrow">Memoria del proyecto</span>
+          <h2>Notas y grabaciones</h2>
+          <p>Minutas de reuniones, refinamientos y demos con los acuerdos tomados y el enlace a su grabación, para que cualquiera del equipo pueda ponerse al día.</p>
+          <div class="notes-stats notes-live">
+            <span><strong id="notas-count">–</strong> registros</span>
+            <span class="notes-sync">Conectando…</span>
+          </div>
+        </div>
+
+        <div class="tile soft links notas-only" hidden>
+          <span class="label">Documentos de notas</span>
+          <div class="link-grid">
+            <a class="link-card" href="https://docs.google.com/document/d/1_8R9sG_mTTVaPTHxQk6KXstmxV16_au_l_6kNMni1RI/edit?tab=t.xeh5e3tuzanc" target="_blank" rel="noopener">
+              <img src="assets/img/icons/drive.png" alt="">
+              <div>
+                <h3>Líneas Adicionales - Catálogo</h3>
+                <span>Documento en Google Drive</span>
+              </div>
+            </a>
+            <a class="link-card" href="https://docs.google.com/document/d/111wlmT_So5BJ97fceZY1nGCYQnSPTEoNvrgv8eBXNHE/edit?tab=t.8lmzqgf2kvka#heading=h.pz9s3i9msjkc" target="_blank" rel="noopener">
+              <img src="assets/img/icons/drive.png" alt="">
+              <div>
+                <h3>Gastos de Instalación</h3>
+                <span>Documento en Google Drive</span>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="tile white notas-only notes-setup" hidden>
+          <span class="label">Configuración pendiente</span>
+          <p>Esta sección aún no está conectada al Google Sheet. Sigue los pasos de <code>README.md</code> &gt; “Dudas, Notas y Grabaciones” y pega la URL de la Web App en <code>assets/data/notas-config.js</code>.</p>
+        </div>
+
+        <div class="tile white stories notas-only notes-live" hidden>
+          <div class="board-head">
+            <span class="label">Reuniones</span>
+          </div>
+          <div class="chips" id="notas-sprint-filter"></div>
+          <div class="meeting-list" id="notas-list"><p class="muted">Cargando…</p></div>
+
+          <form id="nota-form" class="notes-form">
+            <span class="label">Agregar nota o grabación</span>
+            <div class="form-row">
+              <input name="titulo" placeholder="Título (ej. Refinamiento Solo Voz)" required maxlength="200">
+              <select name="sprint" class="sprint-select"></select>
+              <input name="fecha" type="date">
+            </div>
+            <textarea name="notas" placeholder="Notas y acuerdos de la reunión" rows="4"></textarea>
+            <input name="url" type="url" placeholder="Enlace a la grabación (opcional) https://drive.google.com/…">
+            <div class="form-row">
+              <input class="team-key" type="password" placeholder="Clave del equipo" autocomplete="off">
+              <button type="button" class="chip form-cancel" hidden>Cancelar</button>
+              <button type="submit" class="primary-btn">Agregar</button>
+            </div>
+            <span class="notes-message"></span>
+          </form>
+        </div>
+
+        <div class="tile hero docs-intro flujo-only" hidden>
+          <span class="eyebrow">TELMEX B2C · Order Management</span>
+          <h2>Flujo de ventas hasta el Plan de Orquestación</h2>
+          <p>Guía paso a paso para crear un pedido en sandbox y llevarlo hasta Order Management, incluyendo los bypass necesarios cuando los servicios externos no responden.</p>
+          <div class="intro-tags">
+            <a href="#flujo-etapa-1">1 · Validación del Cliente</a>
+            <a href="#flujo-etapa-2">2 · Selección de la Oferta</a>
+            <a href="#flujo-etapa-3">3 · Pagos y Entrega</a>
+            <a href="#flujo-etapa-4">4 · Agendamiento y Finalización</a>
+            <a href="#flujo-etapa-5">5 · Resumen</a>
+          </div>
+        </div>
+
+        <div class="tile white flujo flujo-only" id="flujo-etapa-1" hidden>
+          <span class="label">Etapa 1 · Validación del Cliente</span>
+
+          <article class="step">
+            <h3><span class="step-num">1</span>Crear el pedido</h3>
+            <p>Desde una cuenta de tipo <strong>Consumidor</strong>, haz clic en <strong>Crear Pedido</strong> y llena el formulario <strong>Nuevo Pedido</strong>:</p>
+            <table class="kv">
+              <thead><tr><th>Campo</th><th>Valor</th></tr></thead>
+              <tbody>
+                <tr><td>Tipo de Alta</td><td>Alta nueva</td></tr>
+                <tr><td>Tipo Persona</td><td>Persona Física</td></tr>
+                <tr><td>Seleccione domicilio de instalación</td><td>Domicilio existente (elige uno de la lista)</td></tr>
+              </tbody>
+            </table>
+            <p>Haz clic en <strong>Crear Pedido</strong>.</p>
+            <figure><a href="assets/img/flujo/fig-01.jpg" target="_blank"><img src="assets/img/flujo/fig-01.jpg" alt="Formulario Nuevo Pedido" loading="lazy"></a><figcaption>Figura 1. Formulario Nuevo Pedido</figcaption></figure>
+          </article>
+
+          <article class="step">
+            <h3><span class="step-num">2</span>Bypass 1 – Error de factibilidad</h3>
+            <p>Al crearse el pedido aparece el siguiente error y la sección <strong>Resultados de Factibilidad</strong> se queda en “en progreso”:</p>
+            <div class="callout error"><strong>Error de Factibilidad</strong>“No pudimos consultar la factibilidad del domicilio. Intenta de nuevo en unos minutos; si el error continúa, reporta el código 404”</div>
+            <figure><a href="assets/img/flujo/fig-02.jpg" target="_blank"><img src="assets/img/flujo/fig-02.jpg" alt="Error de factibilidad" loading="lazy"></a><figcaption>Figura 2. Error de factibilidad al crear el pedido</figcaption></figure>
+            <p><strong>Por qué ocurre:</strong> el servicio de factibilidad no responde en sandbox. <strong>Solución:</strong> simular una factibilidad exitosa con un PATCH desde el REST Explorer:</p>
+            <ol>
+              <li>Copia el ID del pedido de la URL (empieza con <code>801…</code>).</li>
+              <li>Abre el panel de <strong>Salesforce Inspector</strong> (pestaña lateral derecha) y haz clic en <strong>REST Explorer</strong>.</li>
+              <li>Selecciona el método <strong>PATCH</strong>, pega la URL reemplazando <code>{{ORDER_ID}}</code> por el ID del pedido, pega el Request Body y haz clic en <strong>Send</strong>.</li>
+              <li>Verifica que la respuesta sea <strong>Status: 204</strong> y refresca el pedido.</li>
+            </ol>
+            <figure><a href="assets/img/flujo/fig-03.jpg" target="_blank"><img src="assets/img/flujo/fig-03.jpg" alt="REST Explorer en Salesforce Inspector" loading="lazy"></a><figcaption>Figura 3. Acceso al REST Explorer desde Salesforce Inspector</figcaption></figure>
+            <div class="code-box">
+              <div class="code-head"><span>Método: <strong>PATCH</strong> · URL</span><button class="copy-btn">Copiar</button></div>
+              <pre><code>/services/data/v66.0/sobjects/Order/{{ORDER_ID}}</code></pre>
+            </div>
+            <div class="code-box">
+              <div class="code-head"><span>Request Body</span><button class="copy-btn">Copiar</button></div>
+              <pre><code>{
+    "Status": "Draft",
+    "TMX_VNT_ProductosFactibilidad__c": "[{\"idelementostec\":\"05\"}]",
+    "TMX_VNT_Factibilidad_Status__c": "Completada",
+    "TMX_VNT_TipoDeObjecion__c": "ÉXITO",
+    "TMX_CROSS_TecnologiaFactibilidad__c": "Fibra"
+}</code></pre>
+            </div>
+            <figure><a href="assets/img/flujo/fig-04.jpg" target="_blank"><img src="assets/img/flujo/fig-04.jpg" alt="Respuesta Status 204" loading="lazy"></a><figcaption>Figura 4. Request ejecutado con respuesta Status 204</figcaption></figure>
+            <div class="callout success"><strong>Resultado esperado</strong>Al refrescar, Validación de duplicidad y Resultados de Factibilidad aparecen en verde, con Motivo “Completado exitosamente” y Tipo de Objeción “ÉXITO”.</div>
+            <figure><a href="assets/img/flujo/fig-05.jpg" target="_blank"><img src="assets/img/flujo/fig-05.jpg" alt="Factibilidad completada" loading="lazy"></a><figcaption>Figura 5. Factibilidad completada después del bypass</figcaption></figure>
+          </article>
+
+          <article class="step">
+            <h3><span class="step-num">3</span>Marcar “Mismo Titular” y avanzar a Selección de la Oferta</h3>
+            <p>En la sección <strong>Domiciliación</strong>, edita el registro, marca el check <strong>Mismo Titular</strong> y guarda. Después avanza el pedido a la etapa <strong>Selección de la Oferta</strong>.</p>
+            <div class="callout warning"><strong>Si no marcas el check</strong>Al intentar avanzar verás: “Dado que el Tarjetahabiente no corresponde al ‘Mismo Titular’, complete los datos en la sección ‘Domiciliación’.”</div>
+            <figure><a href="assets/img/flujo/fig-06.jpg" target="_blank"><img src="assets/img/flujo/fig-06.jpg" alt="Check Mismo Titular" loading="lazy"></a><figcaption>Figura 6. Check Mismo Titular y error si no se marca</figcaption></figure>
+          </article>
+        </div>
+
+        <div class="tile white flujo flujo-only" id="flujo-etapa-2" hidden>
+          <span class="label">Etapa 2 · Selección de la Oferta</span>
+
+          <article class="step">
+            <h3><span class="step-num">4</span>Agregar el producto al carrito</h3>
+            <ol>
+              <li>En <strong>Carrito de Compras</strong>, haz clic en <strong>+ Agregar Productos</strong>.</li>
+              <li>En la lista de precios selecciona <strong>Hogar - Voz y Datos</strong>.</li>
+              <li>Busca <strong>En Productos - Paquete 389</strong> y haz clic en <strong>Agregar al Carrito</strong>.</li>
+              <li>Cierra el mensaje “La petición ha finalizado correctamente”.</li>
+            </ol>
+            <figure><a href="assets/img/flujo/fig-07.jpg" target="_blank"><img src="assets/img/flujo/fig-07.jpg" alt="Botón Agregar Productos" loading="lazy"></a><figcaption>Figura 7. Botón Agregar Productos</figcaption></figure>
+            <figure><a href="assets/img/flujo/fig-08.jpg" target="_blank"><img src="assets/img/flujo/fig-08.jpg" alt="Catálogo Paquete 389" loading="lazy"></a><figcaption>Figura 8. Catálogo: Hogar - Voz y Datos › Paquete 389</figcaption></figure>
+            <figure><a href="assets/img/flujo/fig-09.jpg" target="_blank"><img src="assets/img/flujo/fig-09.jpg" alt="Producto agregado" loading="lazy"></a><figcaption>Figura 9. Confirmación de producto agregado</figcaption></figure>
+          </article>
+
+          <article class="step">
+            <h3><span class="step-num">5</span>Bypass 2 – Confirmar el carrito</h3>
+            <p>Haz clic en <strong>Confirmar</strong> e intenta avanzar a <strong>Pagos y Entrega</strong>. El pedido no avanza y muestra:</p>
+            <div class="callout error"><strong>Ha encontrado algunos errores al intentar guardar este registro</strong>“No puedes avanzar a la etapa ‘Pagos’ sin haber hecho la confirmación”</div>
+            <figure><a href="assets/img/flujo/fig-10.jpg" target="_blank"><img src="assets/img/flujo/fig-10.jpg" alt="Botón Confirmar" loading="lazy"></a><figcaption>Figura 10. Botón Confirmar del carrito</figcaption></figure>
+            <figure><a href="assets/img/flujo/fig-11.jpg" target="_blank"><img src="assets/img/flujo/fig-11.jpg" alt="Error al avanzar a Pagos" loading="lazy"></a><figcaption>Figura 11. Error al intentar avanzar a Pagos</figcaption></figure>
+            <p><strong>Solución:</strong> marcar manualmente el checkout como realizado.</p>
+            <ol>
+              <li>Con el pedido abierto, en Salesforce Inspector haz clic en <strong>Show all data</strong>.</li>
+              <li>Busca el campo <code>TMX_VNT_HasCheckout__c</code> <button class="copy-btn inline" data-copy="TMX_VNT_HasCheckout__c">Copiar</button>, haz clic en <strong>Edit</strong>, cambia el valor a <code>true</code> y guarda.</li>
+              <li>Regresa al pedido, refresca, haz clic en <strong>Confirmar</strong> y avanza a <strong>Pagos y Entrega</strong>.</li>
+            </ol>
+            <figure><a href="assets/img/flujo/fig-12.jpg" target="_blank"><img src="assets/img/flujo/fig-12.jpg" alt="TMX_VNT_HasCheckout__c = true" loading="lazy"></a><figcaption>Figura 12. Campo TMX_VNT_HasCheckout__c = true en Salesforce Inspector</figcaption></figure>
+          </article>
+        </div>
+
+        <div class="tile white flujo flujo-only" id="flujo-etapa-3" hidden>
+          <span class="label">Etapa 3 · Pagos y Entrega</span>
+
+          <article class="step">
+            <h3><span class="step-num">6</span>Seleccionar la forma de pago</h3>
+            <p>En la sección <strong>Forma de Pago</strong>, edita <strong>Gastos de instalación</strong>, elige una opción (por ejemplo, “Pago inicial $400 y 12 meses $100”) y haz clic en <strong>Guardar</strong>.</p>
+            <figure><a href="assets/img/flujo/fig-13.jpg" target="_blank"><img src="assets/img/flujo/fig-13.jpg" alt="Gastos de instalación" loading="lazy"></a><figcaption>Figura 13. Selección de Gastos de instalación</figcaption></figure>
+          </article>
+
+          <article class="step">
+            <h3><span class="step-num">7</span>Bypass 3 – Validaciones de reserva</h3>
+            <p>Al intentar avanzar a <strong>Agendamiento y Finalización</strong> aparece:</p>
+            <div class="callout error"><strong>Ha encontrado algunos errores al intentar guardar este registro</strong>“Estamos realizando validaciones, favor de esperar.”</div>
+            <figure><a href="assets/img/flujo/fig-14.jpg" target="_blank"><img src="assets/img/flujo/fig-14.jpg" alt="Error al avanzar a Agendamiento" loading="lazy"></a><figcaption>Figura 14. Error al avanzar a Agendamiento y Finalización</figcaption></figure>
+            <p><strong>Por qué ocurre:</strong> las consultas de reserva de número y de facilidad no responden en sandbox. <strong>Solución:</strong> ejecutar un PATCH en el REST Explorer, igual que en el Paso 2.</p>
+            <div class="code-box">
+              <div class="code-head"><span>Método: <strong>PATCH</strong> · URL</span><button class="copy-btn">Copiar</button></div>
+              <pre><code>/services/data/v66.0/sobjects/Order/{{ORDER_ID}}</code></pre>
+            </div>
+            <div class="code-box">
+              <div class="code-head"><span>Request Body</span><button class="copy-btn">Copiar</button></div>
+              <pre><code>{
+    "TMX_VNT_Estado_Consulta__c": "Exitosa",
+    "TMX_VNT_EstadoReservaNumero__c": "Reservado",
+    "TMX_VNT_EstadoDeReservaFacilidad__c": "Reservada"
+}</code></pre>
+            </div>
+            <p>Refresca el pedido y avánzalo a <strong>Agendamiento y Finalización</strong>.</p>
+          </article>
+        </div>
+
+        <div class="tile white flujo flujo-only" id="flujo-etapa-4" hidden>
+          <span class="label">Etapa 4 · Agendamiento y Finalización</span>
+
+          <article class="step">
+            <h3><span class="step-num">8</span>Registrar los datos de facturación</h3>
+            <ol>
+              <li>En el panel <strong>Datos Facturación</strong>, haz clic en <strong>Registrar Datos Facturación</strong>.</li>
+              <li>Selecciona <strong>Crear uno nuevo</strong>.</li>
+              <li>Captura el RFC de prueba y haz clic en <strong>Validar</strong>; se autocompletan nombre y código postal fiscal.</li>
+              <li>Selecciona <strong>Régimen Fiscal</strong> y <strong>Uso de CFDI</strong>, y haz clic en <strong>Guardar</strong>.</li>
+            </ol>
+            <table class="kv">
+              <thead><tr><th>Dato de prueba</th><th>Valor</th></tr></thead>
+              <tbody>
+                <tr><td>RFC</td><td><code>CAAN910303BIA</code> <button class="copy-btn inline" data-copy="CAAN910303BIA">Copiar</button></td></tr>
+                <tr><td>Régimen Fiscal (ejemplo)</td><td>606 - Arrendamiento</td></tr>
+                <tr><td>Uso de CFDI (ejemplo)</td><td>G02 - Devoluciones, descuentos o bonificaciones</td></tr>
+              </tbody>
+            </table>
+            <figure><a href="assets/img/flujo/fig-15.jpg" target="_blank"><img src="assets/img/flujo/fig-15.jpg" alt="Crear uno nuevo" loading="lazy"></a><figcaption>Figura 15. Registrar Datos Facturación › Crear uno nuevo</figcaption></figure>
+            <figure><a href="assets/img/flujo/fig-16.jpg" target="_blank"><img src="assets/img/flujo/fig-16.jpg" alt="RFC validado" loading="lazy"></a><figcaption>Figura 16. Formulario de Datos Facturación con RFC validado</figcaption></figure>
+          </article>
+        </div>
+
+        <div class="tile white flujo flujo-only" id="flujo-etapa-5" hidden>
+          <span class="label">Etapa 5 · Resumen</span>
+
+          <article class="step">
+            <h3><span class="step-num">9</span>Enviar a Aprovisionamiento</h3>
+            <p>Con el pedido en <strong>Resumen</strong>, haz clic en el botón <strong>Enviar a Aprovisionamiento</strong> (esquina superior derecha).</p>
+            <div class="callout warning"><strong>No avances con la barra de etapas</strong>Si haces clic directamente en la etapa del path, aparece: “No se puede seleccionar esta etapa si el pedido no corresponde a Canales Externos.” Usa siempre el botón Enviar a Aprovisionamiento.</div>
+            <figure><a href="assets/img/flujo/fig-17.jpg" target="_blank"><img src="assets/img/flujo/fig-17.jpg" alt="Botón Enviar a Aprovisionamiento" loading="lazy"></a><figcaption>Figura 17. Botón Enviar a Aprovisionamiento</figcaption></figure>
+          </article>
+
+          <article class="step">
+            <h3><span class="step-num">10</span>Verificar el Plan de Orquestación</h3>
+            <p>Se genera el <strong>Plan de Orquestación</strong> ligado al pedido (campo Orden). En la sección <strong>Orchestration Plan</strong> se visualizan los elementos y su estado (Completed, Running, Pending).</p>
+            <div class="callout success"><strong>Fin del flujo</strong>El pedido ya está en Order Management y se puede probar la orquestación.</div>
+            <figure><a href="assets/img/flujo/fig-18.jpg" target="_blank"><img src="assets/img/flujo/fig-18.jpg" alt="Plan de Orquestación" loading="lazy"></a><figcaption>Figura 18. Vista del Plan de Orquestación</figcaption></figure>
+          </article>
+        </div>
+
+        <div class="tile soft flujo flujo-only" hidden>
+          <span class="label">Referencia rápida de errores</span>
+          <table>
+            <thead><tr><th>Mensaje de error</th><th>Etapa</th><th>Solución</th></tr></thead>
+            <tbody>
+              <tr><td>“No pudimos consultar la factibilidad del domicilio… código 404”</td><td>Validación del Cliente</td><td>Bypass 1 – PATCH de factibilidad (Paso 2)</td></tr>
+              <tr><td>“…complete los datos en la sección ‘Domiciliación’”</td><td>Validación del Cliente</td><td>Marcar Mismo Titular (Paso 3)</td></tr>
+              <tr><td>“No puedes avanzar a la etapa ‘Pagos’ sin haber hecho la confirmación”</td><td>Selección de la Oferta</td><td><code>TMX_VNT_HasCheckout__c</code> = true y Confirmar (Paso 5)</td></tr>
+              <tr><td>“Estamos realizando validaciones, favor de esperar.”</td><td>Pagos y Entrega</td><td>Bypass 3 – PATCH de reservas (Paso 7)</td></tr>
+              <tr><td>“No se puede seleccionar esta etapa si el pedido no corresponde a Canales Externos.”</td><td>Resumen</td><td>Usar el botón Enviar a Aprovisionamiento (Paso 9)</td></tr>
+            </tbody>
+          </table>
+          <div class="callout info"><strong>Tip</strong>Si un PATCH no responde 204, revisa que el ID del pedido sea correcto y que el JSON no tenga comillas “tipográficas” (copiar desde Word a veces las cambia). Usa siempre comillas rectas <code>"</code> — los botones <em>Copiar</em> de esta guía ya las copian correctamente.</div>
+        </div>
+
+        <div class="tile future future-only" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20M5 20V9l7-5 7 5v11"/><path d="M9 20v-6h6v6"/></svg>
+          <span class="eyebrow">Próximamente</span>
+          <h2 id="future-title"></h2>
+          <p>Espacio reservado para futuras construcciones. Aquí se publicarán las HDUs, refinamientos y entregables cuando el sprint inicie.</p>
+        </div>
+      </section>
     </div>
-  </header>
+  </div>
 
-  <main class="container">
-    <div class="filters">
-      <button class="filter active" data-category="all">Todas</button>
-      <button class="filter" data-category="implementation">Implementación</button>
-    </div>
-
-    <div class="grid">
-      <!-- Para agregar una presentación, copia este bloque y actualiza href, categoría, título y fecha -->
-      <a class="card" data-category="implementation" href="presentations/implementation/2026-11-25-portal-om/">
-        <span class="tag">Implementación</span>
-        <h3>Portal para llevar presentaciones y documentación de OM</h3>
-        <time datetime="2026-11-25">25 de noviembre de 2026</time>
-      </a>
-    </div>
-  </main>
-
-  <footer>&copy; 2026 TELMEX OM</footer>
-
+  <script src="assets/data/jira.js"></script>
+  <script src="assets/data/notas-config.js"></script>
   <script>
-    document.querySelectorAll('.filter').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.filter').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const cat = btn.dataset.category;
-        document.querySelectorAll('.card').forEach(card => {
-          card.style.display = (cat === 'all' || card.dataset.category === cat) ? '' : 'none';
-        });
-      });
-    });
+    const sprint = window.JIRA_SPRINT;
+    const fmt = d => new Date(d + 'T12:00:00').toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });
+    const total = sprint.stories.length;
+    const start = new Date(sprint.start + 'T00:00:00'), end = new Date(sprint.end + 'T23:59:59');
+    const elapsed = Math.min(1, Math.max(0, (Date.now() - start) / (end - start)));
+    const issueUrl = key => `${sprint.site}/browse/${key}`;
+    const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const columnOf = status => sprint.columns.find(c => c.status === status)?.name ?? status;
+
+    document.getElementById('sprint-link').href = sprint.boardUrl;
+    document.getElementById('sprint-name').textContent = sprint.name;
+    document.getElementById('sprint-dates').textContent = `${fmt(sprint.start)} – ${fmt(sprint.end)}`;
+    document.getElementById('sprint-progress').style.width = `${Math.round(elapsed * 100)}%`;
+    document.getElementById('sprint-total').textContent = `${total} historias · ${Math.round(elapsed * 100)}% del tiempo transcurrido`;
+    function boardColumns(columnsId, updatedId) {
+      document.getElementById(updatedId).textContent = `Actualizado: ${fmt(sprint.updated)}`;
+      document.getElementById(columnsId).innerHTML = sprint.columns.map(c => {
+        const count = sprint.stories.filter(s => s.status === c.status).length;
+        return `
+        <a class="column${count ? ' active' : ''}" href="${sprint.boardUrl}" target="_blank" rel="noopener">
+          <strong>${count}</strong>
+          <span>${c.name}</span>
+        </a>`;
+      }).join('');
+    }
+    boardColumns('board-columns', 'board-updated');
+    boardColumns('s2-columns', 's2-updated');
+
+    function storiesTable(stories, bodyId, filterId) {
+      const who = s => s.assignee || 'Sin asignar';
+      const people = [...new Set(stories.map(who))].sort();
+      let current = 'all';
+      const filter = document.getElementById(filterId);
+
+      function render() {
+        document.getElementById(bodyId).innerHTML = stories.filter(s => current === 'all' || who(s) === current).map(s => `
+          <tr>
+            <td><a href="${issueUrl(s.key)}" target="_blank" rel="noopener">${s.key}</a></td>
+            <td>${esc(s.summary)}</td>
+            <td><span class="avatar">${esc(who(s)[0].toUpperCase())}</span>${esc(who(s))}</td>
+            <td><span class="status${s.status === 'FINALIZADO' ? ' done' : ''}">${esc(s.status === 'FINALIZADO' ? 'Finalizado' : columnOf(s.status))}</span></td>
+            <td>${s.points ?? '—'}</td>
+          </tr>`).join('');
+        filter.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.assignee === current));
+      }
+
+      filter.innerHTML = [['all', `Todos (${stories.length})`], ...people.map(p => [p, `${p} (${stories.filter(s => who(s) === p).length})`])]
+        .map(([value, label]) => `<button class="chip" data-assignee="${esc(value)}">${esc(label)}</button>`).join('');
+      filter.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => { current = c.dataset.assignee; render(); }));
+      render();
+    }
+
+    storiesTable(sprint.stories, 'stories-body', 'assignee-filter');
+    storiesTable(sprint.stories, 's2-body', 's2-filter');
+    const s2Points = sprint.stories.reduce((n, s) => n + (s.points || 0), 0);
+    document.getElementById('s2-eyebrow').textContent = `Sprint en curso · ${fmt(sprint.start)} – ${fmt(sprint.end)}`;
+    document.getElementById('s2-summary').textContent =
+      `${total} historias de usuario en construcción (${s2Points} story points), ${Math.round(elapsed * 100)}% del tiempo del sprint transcurrido. Abajo el estado de cada columna del tablero de Jira y el detalle de cada HDU.`;
+
+    const sprint1 = window.JIRA_SPRINT_1;
+    const s1Points = sprint1.stories.reduce((n, s) => n + (s.points || 0), 0);
+    document.getElementById('s1-summary').textContent =
+      `${sprint1.stories.length} historias de usuario finalizadas (${s1Points} story points), cerrado en Jira el ${fmt(sprint1.completed)}. Consulta el story map para ver cómo se encadenan en el flujo de OM, o revisa abajo el detalle de cada HDU y quién la entregó.`;
+    storiesTable(sprint1.stories, 's1-body', 's1-filter');
+
+    const navItems = document.querySelectorAll('.nav-item');
+
+    function showSection(section) {
+      const btn = document.querySelector(`.nav-item[data-section="${section}"]`) || navItems[0];
+      section = btn.dataset.section;
+      navItems.forEach(b => b.classList.toggle('active', b === btn));
+      document.querySelectorAll('.home-only').forEach(el => el.hidden = section !== 'all');
+      document.querySelectorAll('.docs-only').forEach(el => el.hidden = section !== 'docs');
+      document.querySelectorAll('.flujo-only').forEach(el => el.hidden = section !== 'flujo');
+      ['dudas', 'notas'].forEach(name => document.querySelectorAll(`.${name}-only`).forEach(el => {
+        const live = !!window.NOTES_API_URL;
+        el.hidden = section !== name || (el.classList.contains('notes-live') && !live) || (el.classList.contains('notes-setup') && live);
+      }));
+      document.querySelectorAll('.sprint-1-only').forEach(el => el.hidden = section !== 'sprint-1');
+      document.querySelectorAll('.sprint-2-only').forEach(el => el.hidden = section !== 'sprint-2');
+      document.querySelectorAll('.sprint-3-only').forEach(el => el.hidden = section !== 'sprint-3');
+      const isFuture = ['sprint-4', 'sprint-5'].includes(section);
+      document.querySelectorAll('.future-only').forEach(el => el.hidden = !isFuture);
+      if (isFuture) document.getElementById('future-title').textContent = `OM ${btn.textContent}`;
+      document.getElementById('section-title').textContent = btn.textContent;
+      history.replaceState(null, '', section === 'all' ? location.pathname : `#${section}`);
+    }
+
+    navItems.forEach(b => b.addEventListener('click', () => showSection(b.dataset.section)));
+
+    // Botones "Copiar" del flujo: copian data-copy o el bloque de código de su caja
+    document.querySelectorAll('.copy-btn').forEach(btn => btn.addEventListener('click', async () => {
+      const text = btn.dataset.copy ?? btn.closest('.code-box').querySelector('code').textContent;
+      await navigator.clipboard.writeText(text);
+      btn.textContent = '¡Copiado!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 1500);
+    }));
+    // Los enlaces de etapa (#flujo-etapa-N) hacen scroll sin cambiar de sección
+    document.querySelectorAll('.intro-tags a[href^="#flujo-"]').forEach(a => a.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+    }));
+    showSection(location.hash.slice(1) || 'all');
   </script>
+  <script src="assets/js/notas.js"></script>
 </body>
 </html>

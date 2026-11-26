@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Squad OM | Story Map · OM Sprint 1 · Telmex TAC</title>
+<style>
+  :root {
+    --sf-blue:      #0176d3;
+    --sf-blue-dark: #032d60;
+    --sf-sky:       #1b96ff;
+    --sf-sky-light: #eef4ff;
+    --sf-teal:      #06a59a;
+    --sf-teal-light:#e8f9f8;
+    --sf-indigo:    #5867e8;
+    --sf-indigo-light:#f3f4ff;
+    --sf-green:     #2e844a;
+    --sf-green-light:#eaf5ea;
+    --sf-orange:    #fe9339;
+    --sf-orange-light:#fff3e0;
+    --sf-purple:    #9050e9;
+    --sf-purple-light:#f6f0ff;
+    --sf-red:       #ba0517;
+    --sf-red-light: #fff1ee;
+    --ink:          #032d60;
+    --muted:        #4a6285;
+    --line:         #d8e3f4;
+    --bg:           #f4f7fb;
+    --white:        #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 13px;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: #141a23;
+    color: #fff;
+    padding: 16px 40px 20px;
+  }
+  /* Squad OM: barra de marca y regreso al portal */
+  .squad-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid #232a35; }
+  .squad-bar img { width: 40px; height: auto; }
+  .squad-bar strong { font-size: 14px; }
+  .squad-bar a { margin-left: auto; color: #c7cfdb; text-decoration: none; font-size: 12px; background: #232a35; padding: 6px 12px; border-radius: 7px; }
+  .squad-bar a:hover { color: #fff; background: #5374b9; }
+  .s-done { background: #d1fae5; color: #065f46; }
+  header h1 { font-size: 22px; font-weight: 900; letter-spacing: -.02em; margin-bottom: 4px; }
+  header .sub { font-size: 12px; opacity: .75; }
+  .legend-row {
+    display: flex; gap: 24px; align-items: center; margin-top: 14px; flex-wrap: wrap;
+  }
+  .leg { display: flex; align-items: center; gap: 7px; font-size: 11.5px; }
+  .leg-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ── MAIN LAYOUT ── */
+  .canvas {
+    padding: 28px 40px 60px;
+    overflow-x: auto;
+  }
+
+  /* ── PHASE ROW ── */
+  .phase-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 0;
+    margin-bottom: 0;
+  }
+
+  /* ── PHASE LABEL ── */
+  .phase-label {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 18px 16px 18px 0;
+    border-right: 3px solid var(--line);
+    min-height: 110px;
+  }
+  .phase-num {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .phase-name {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .phase-api {
+    margin-top: 6px;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 20px;
+    display: inline-block;
+    width: fit-content;
+  }
+
+  /* ── CARDS AREA ── */
+  .cards-area {
+    padding: 14px 0 14px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .phase-row:last-child .cards-area { border-bottom: none; }
+
+  /* ── CARD GROUP (multiple cards same phase) ── */
+  .card-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--white);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 16px;
+    width: 280px;
+    min-width: 240px;
+    box-shadow: 0 1px 4px rgba(3,45,96,.06);
+    transition: box-shadow .15s;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .card:hover { box-shadow: 0 4px 14px rgba(3,45,96,.12); }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .card-key {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--sf-blue);
+    background: var(--sf-sky-light);
+    padding: 2px 7px;
+    border-radius: 5px;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .card-key:hover { background: #c7dbf9; }
+  .card-status {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .s-demo     { background: #d1fae5; color: #065f46; }
+  .s-pruebas  { background: #e0f2fe; color: #0369a1; }
+  .s-diseno   { background: #f3f4f6; color: #4b5563; }
+  .s-dev      { background: #fff3cd; color: #92400e; }
+
+  .card-title {
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--ink);
+  }
+
+  .card-spec {
+    font-size: 10.5px;
+    color: var(--muted);
+  }
+  .spec-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 20px;
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+    text-decoration: none;
+  }
+  .spec-badge:hover { background: #fde68a; }
+
+  /* ── MULESOFT LINK ── */
+  .mu-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--muted);
+    padding-top: 4px;
+    border-top: 1px solid var(--line);
+  }
+  .mu-badge {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10.5px;
+    font-weight: 700;
+    background: #064e3b;
+    color: #a7f3d0;
+    padding: 1px 7px;
+    border-radius: 5px;
+    text-decoration: none;
+  }
+  .mu-badge:hover { background: #065f46; }
+  .mu-label { font-size: 10px; }
+
+  /* ── MULESOFT SECTION ── */
+  .mu-section {
+    margin-top: 32px;
+    padding: 20px 24px;
+    background: var(--white);
+    border: 2px solid #064e3b;
+    border-radius: 12px;
+    box-shadow: 0 1px 6px rgba(6,78,59,.08);
+  }
+  .mu-section-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: #064e3b;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .mu-section-title::before {
+    content: "";
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #064e3b;
+  }
+  .mu-cards { display: flex; gap: 16px; flex-wrap: wrap; }
+  .mu-card {
+    background: #f0fdf4;
+    border: 1.5px solid #6ee7b7;
+    border-radius: 10px;
+    padding: 14px 16px;
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .mu-card-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .mu-card-title { font-size: 12.5px; font-weight: 600; line-height: 1.4; color: #064e3b; }
+  .mu-consumed-by {
+    font-size: 10.5px;
+    color: var(--muted);
+    padding-top: 6px;
+    border-top: 1px solid #bbf7d0;
+  }
+  .consumed-key {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--sf-blue);
+    background: var(--sf-sky-light);
+    padding: 1px 6px;
+    border-radius: 4px;
+    text-decoration: none;
+    margin: 1px 2px;
+    display: inline-block;
+  }
+  .consumed-key:hover { background: #c7dbf9; }
+
+  /* ── PHASE COLORS ── */
+  .p1 .phase-name { color: #0369a1; }
+  .p1 .phase-api { background: #e0f2fe; color: #0369a1; }
+  .p2 .phase-name { color: #5867e8; }
+  .p2 .phase-api { background: var(--sf-indigo-light); color: var(--sf-indigo); }
+  .p3 .phase-name { color: #047857; }
+  .p3 .phase-api { background: #d1fae5; color: #047857; }
+  .p4 .phase-name { color: #b45309; }
+  .p4 .phase-api { background: #fef3c7; color: #b45309; }
+  .p5 .phase-name { color: #7c3aed; }
+  .p5 .phase-api { background: var(--sf-purple-light); color: var(--sf-purple); }
+  .p6 .phase-name { color: #047857; }
+  .p6 .phase-api { background: #d1fae5; color: #047857; }
+  .p7 .phase-name { color: var(--sf-red); }
+  .p7 .phase-api { background: var(--sf-red-light); color: var(--sf-red); }
+
+  /* Phase left border accent */
+  .p1 .phase-label { border-color: #0369a1; }
+  .p2 .phase-label { border-color: var(--sf-indigo); }
+  .p3 .phase-label { border-color: #047857; }
+  .p4 .phase-label { border-color: #b45309; }
+  .p5 .phase-label { border-color: var(--sf-purple); }
+  .p6 .phase-label { border-color: #047857; }
+  .p7 .phase-label { border-color: var(--sf-red); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="squad-bar">
+    <img src="../../assets/img/salesforce-logo.webp" alt="Salesforce">
+    <strong>Squad OM</strong>
+    <a href="../../#sprint-1">&larr; Volver a Sprint 1</a>
+  </div>
+  <h1>Story Map · Squad OM · Sprint 1</h1>
+  <div class="sub">Telmex TAC &nbsp;·&nbsp; F2 Fase 2 &nbsp;·&nbsp; 12 HDUs en secuencia lógica + habilitadores Coliving y MuleSoft</div>
+  <div class="legend-row">
+    <div class="leg"><div class="leg-dot" style="background:#065f46"></div>FINALIZADO</div>
+    <div class="leg"><div class="leg-dot" style="background:#0369a1"></div>EN PRUEBAS</div>
+    <div class="leg"><div class="leg-dot" style="background:#4b5563"></div>DISEÑO DE SOLUCIÓN</div>
+    <div class="leg" style="margin-left:16px; color:rgba(255,255,255,.7); font-size:11px">
+      Las flechas MuleSoft indican dependencia de integración
+    </div>
+  </div>
+</header>
+
+<div class="canvas">
+
+  <!-- ═══════════════════════════════════════════════════════
+       FASE 1 — DESCOMPOSICIÓN
+  ═══════════════════════════════════════════════════════ -->
+  <div class="phase-row p1">
+    <div class="phase-label">
+      <div class="phase-num">Fase 1</div>
+      <div class="phase-name">Descomposición del Catálogo Técnico</div>
+      <div class="phase-api">Catálogo OM</div>
+    </div>
+    <div class="cards-area">
+      <div class="card-group">
+
+        <div class="card">
+          <div class="card-header">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9353" target="_blank" class="card-key">TAC-9353</a>
+            <span class="card-status s-done">FINALIZADO</span>
+          </div>
+          <div class="card-title">Mapeo, Configuración del Catálogo Técnico y Descomposición de la Orden — Paquetes Negocio Voz y Datos</div>
+          <div class="card-spec">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9210" target="_blank" class="spec-badge">BS-CAT-03</a>
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-8969" target="_blank" class="spec-badge" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd">F2 Paquetes comerciales</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FASE 2 — ORQUESTACIÓN
+  ═══════════════════════════════════════════════════════ -->
+  <div class="phase-row p2">
+    <div class="phase-label">
+      <div class="phase-num">Fase 2</div>
+      <div class="phase-name">Orquestación del Plan de Aprovisionamiento</div>
+      <div class="phase-api">Orchestration Plan</div>
+    </div>
+    <div class="cards-area">
+      <div class="card-group">
+
+        <div class="card">
+          <div class="card-header">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9354" target="_blank" class="card-key">TAC-9354</a>
+            <span class="card-status s-done">FINALIZADO</span>
+          </div>
+          <div class="card-title">Generar Plan de Orquestación para Paquetes Negocio Voz y Datos</div>
+          <div class="card-spec">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9210" target="_blank" class="spec-badge">BS-CAT-03</a>
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-8969" target="_blank" class="spec-badge" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd">F2 Paquetes comerciales</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9569" target="_blank" class="card-key">TAC-9569</a>
+            <span class="card-status s-done">FINALIZADO</span>
+          </div>
+          <div class="card-title">Actualizar Orchestration Plan de altas nuevas: agregar Automatic Task para crear Suscripción y Billing Group en la assetización</div>
+          <div class="card-spec">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9401" target="_blank" class="spec-badge">SPEC-COL-01</a>
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-8979" target="_blank" class="spec-badge" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd">F2 Coliving</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FASE 3 — NOTIFICACIONES TMF681
+  ═══════════════════════════════════════════════════════ -->
+  <div class="phase-row p3">
+    <div class="phase-label">
+      <div class="phase-num">Fase 3</div>
+      <div class="phase-name">Notificaciones y Acompañamiento</div>
+      <div class="phase-api">TMF681</div>
+    </div>
+    <div class="cards-area">
+      <div class="card-group">
+
+        <div class="card">
+          <div class="card-header">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9373" target="_blank" class="card-key">TAC-9373</a>
+            <span class="card-status s-done">FINALIZADO</span>
+          </div>
+          <div class="card-title">Alta de Persona Moral y Cambio de Segmento en el Envío de Notificaciones de Acompañamiento (TMF681)</div>
+          <div class="card-spec">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9068" target="_blank" class="spec-badge">BS-VEN-09</a>
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-8934" target="_blank" class="spec-badge" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd">F2 Gestión cuentas</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FASE 4 — APROVISIONAMIENTO TMF641
+  ═══════════════════════════════════════════════════════ -->
+  <div class="phase-row p4">
+    <div class="phase-label">
+      <div class="phase-num">Fase 4</div>
+      <div class="phase-name">Envío a Aprovisionamiento PISA</div>
+      <div class="phase-api">TMF641</div>
+    </div>
+    <div class="cards-area">
+      <div class="card-group">
+
+        <div class="card">
+          <div class="card-header">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9369" target="_blank" class="card-key">TAC-9369</a>
+            <span class="card-status s-done">FINALIZADO</span>
+          </div>
+          <div class="card-title">Ajuste del mapeo de datos de contacto y cuenta enviados en TMF641 por nuevo modelo de identidad</div>
+          <div class="card-spec">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9068" target="_blank" class="spec-badge">BS-VEN-09</a>
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-8934" target="_blank" class="spec-badge" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd">F2 Gestión cuentas</a>
+          </div>
+          <div class="mu-link">
+            <span class="mu-label">MuleSoft:</span>
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9541" target="_blank" class="mu-badge">TAC-9541</a>
+            <span class="mu-label">Ajuste mapeo TMF641</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9371" target="_blank" class="card-key">TAC-9371</a>
+            <span class="card-status s-done">FINALIZADO</span>
+          </div>
+          <div class="card-title">Alta de Persona Moral y Cambio de Segmento en el Envío a Aprovisionamiento (TMF641)</div>
+          <div class="card-spec">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9068" target="_blank" class="spec-badge">BS-VEN-09</a>
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-8934" target="_blank" class="spec-badge" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd">F2 Gestión cuentas</a>
+          </div>
+          <div class="mu-link">
+            <span class="mu-label">MuleSoft:</span>
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9541" target="_blank" class="mu-badge">TAC-9541</a>
+            <span class="mu-label">Ajuste mapeo TMF641</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-274" target="_blank" class="card-key">TAC-274</a>
+            <span class="card-status s-done">FINALIZADO</span>
+          </div>
+          <div class="card-title">Recibir y guardar la fecha de instalación de servicios</div>
+          <div class="card-spec">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-8979" target="_blank" class="spec-badge" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd">F2 Coliving</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FASE 5 — FACTURACIÓN TMF666 (NO PATCH)
+  ═══════════════════════════════════════════════════════ -->
+  <div class="phase-row p5">
+    <div class="phase-label">
+      <div class="phase-num">Fase 5</div>
+      <div class="phase-name">Envío a Facturación</div>
+      <div class="phase-api">TMF666 POST</div>
+    </div>
+    <div class="cards-area">
+      <div class="card-group">
+
+        <div class="card">
+          <div class="card-header">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9370" target="_blank" class="card-key">TAC-9370</a>
+            <span class="card-status s-done">FINALIZADO</span>
+          </div>
+          <div class="card-title">Ajuste del mapeo de datos de contacto y cuenta enviados en TMF666 por nuevo modelo de identidad</div>
+          <div class="card-spec">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9068" target="_blank" class="spec-badge">BS-VEN-09</a>
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-8934" target="_blank" class="spec-badge" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd">F2 Gestión cuentas</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9372" target="_blank" class="card-key">TAC-9372</a>
+            <span class="card-status s-done">FINALIZADO</span>
+          </div>
+          <div class="card-title">Alta de Persona Moral y Cambio de Segmento en el Envío a Facturación (TMF666)</div>
+          <div class="card-spec">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9068" target="_blank" class="spec-badge">BS-VEN-09</a>
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-8934" target="_blank" class="spec-badge" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd">F2 Gestión cuentas</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FASE 6 — ASSETIZACIÓN Y SUSCRIPCIÓN
+  ═══════════════════════════════════════════════════════ -->
+  <div class="phase-row p6">
+    <div class="phase-label">
+      <div class="phase-num">Fase 6</div>
+      <div class="phase-name">Assetización y Creación de Suscripción</div>
+      <div class="phase-api">Assets · Subscriptions</div>
+    </div>
+    <div class="cards-area">
+      <div class="card-group">
+
+        <div class="card">
+          <div class="card-header">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9415" target="_blank" class="card-key">TAC-9415</a>
+            <span class="card-status s-done">FINALIZADO</span>
+          </div>
+          <div class="card-title">Auto-crear Suscripción y Billing Group al assetizar una orden nueva</div>
+          <div class="card-spec">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9401" target="_blank" class="spec-badge">SPEC-COL-01</a>
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-8979" target="_blank" class="spec-badge" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd">F2 Coliving</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-295" target="_blank" class="card-key">TAC-295</a>
+            <span class="card-status s-done">FINALIZADO</span>
+          </div>
+          <div class="card-title">Guardar en el Asset las fechas de los productos aprovisionados</div>
+          <div class="card-spec">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-8979" target="_blank" class="spec-badge" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd">F2 Coliving</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FASE 7 — HOMOLOGACIÓN TMF666 PATCH
+  ═══════════════════════════════════════════════════════ -->
+  <div class="phase-row p7">
+    <div class="phase-label">
+      <div class="phase-num">Fase 7</div>
+      <div class="phase-name">Homologación de IDs con PISA</div>
+      <div class="phase-api">TMF666 PATCH</div>
+    </div>
+    <div class="cards-area">
+      <div class="card-group">
+
+        <div class="card">
+          <div class="card-header">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9416" target="_blank" class="card-key">TAC-9416</a>
+            <span class="card-status s-done">FINALIZADO</span>
+          </div>
+          <div class="card-title">Homologación de IDs hacia PISA: enviar identificadores SF y funcionales de las entidades clave del modelo vía TMF666 PATCH</div>
+          <div class="card-spec">
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9401" target="_blank" class="spec-badge">SPEC-COL-01</a>
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-8979" target="_blank" class="spec-badge" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd">F2 Coliving</a>
+          </div>
+          <div class="mu-link">
+            <span class="mu-label">MuleSoft:</span>
+            <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9418" target="_blank" class="mu-badge">TAC-9418</a>
+            <span class="mu-label">Back-propagación ID TMF666 PATCH</span>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECCIÓN COLIVING — HABILITADORES
+  ═══════════════════════════════════════════════════════ -->
+  <div class="mu-section" style="border-color:#7c3aed; margin-bottom:16px;">
+    <div class="mu-section-title" style="color:#7c3aed;">
+      <span style="background:#7c3aed; display:inline-block; width:10px; height:10px; border-radius:50%;"></span>
+      HDUs Coliving — Habilitadores del modelo de datos (Squad Migración)
+    </div>
+    <div class="mu-cards">
+
+      <div class="mu-card" style="background:#f6f0ff; border-color:#c4b5fd;">
+        <div class="mu-card-header">
+          <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9409" target="_blank" class="mu-badge" style="font-size:12px; background:#7c3aed;">TAC-9409</a>
+          <span class="card-status s-demo" style="font-size:10px;">DEMO</span>
+        </div>
+        <div class="mu-card-title" style="color:#5b21b6;">[COL] Crear objeto custom Billing Group (Grupo de Facturación) con External ID y campos de ciclo, domiciliación y N Público/N Privado</div>
+        <div class="mu-consumed-by" style="border-color:#ddd6fe;">
+          <span style="font-size:10px; color:#6b7280;">SPEC:</span>
+          <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9401" target="_blank" class="spec-badge">SPEC-COL-01</a>
+          <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-8979" target="_blank" class="spec-badge" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd">F2 Coliving</a>
+        </div>
+      </div>
+
+      <div class="mu-card" style="background:#f6f0ff; border-color:#c4b5fd;">
+        <div class="mu-card-header">
+          <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-531" target="_blank" class="mu-badge" style="font-size:12px; background:#7c3aed;">TAC-531</a>
+          <span class="card-status s-demo" style="font-size:10px;">DEMO</span>
+        </div>
+        <div class="mu-card-title" style="color:#5b21b6;">TMX Coliving — Actualizar identificadores (Cliente, Facturación, Servicio): adecuación al proceso de conversión por Salesforce</div>
+        <div class="mu-consumed-by" style="border-color:#ddd6fe;">
+          <span style="font-size:10px; color:#6b7280;">SPEC:</span>
+          <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9401" target="_blank" class="spec-badge">SPEC-COL-01</a>
+          <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-8979" target="_blank" class="spec-badge" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd">F2 Coliving</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECCIÓN MULESOFT
+  ═══════════════════════════════════════════════════════ -->
+  <div class="mu-section">
+    <div class="mu-section-title">HDUs MuleSoft — Integraciones asociadas al Sprint 1</div>
+    <div class="mu-cards">
+
+      <div class="mu-card">
+        <div class="mu-card-header">
+          <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9541" target="_blank" class="mu-badge" style="font-size:12px">TAC-9541</a>
+          <span class="card-status s-demo" style="font-size:10px">DEMO</span>
+        </div>
+        <div class="mu-card-title">[MuleSoft] Ajuste del mapeo de datos de contacto y cuenta en TMF641 por nuevo modelo de identidad</div>
+        <div class="mu-consumed-by">
+          Consumida por:
+          <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9369" target="_blank" class="consumed-key">TAC-9369</a>
+          <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9371" target="_blank" class="consumed-key">TAC-9371</a>
+        </div>
+      </div>
+
+      <div class="mu-card">
+        <div class="mu-card-header">
+          <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9418" target="_blank" class="mu-badge" style="font-size:12px">TAC-9418</a>
+          <span class="card-status s-demo" style="font-size:10px">DEMO</span>
+        </div>
+        <div class="mu-card-title">[MuleSoft] Back-propagación de IDs para PISA — TMF666 PATCH</div>
+        <div class="mu-consumed-by">
+          Consumida por:
+          <a href="https://tmxrncomosi1.atlassian.net/browse/TAC-9416" target="_blank" class="consumed-key">TAC-9416</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /canvas -->
+</body>
+</html>

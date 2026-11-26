@@ -1,0 +1,467 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Squad OM | TMF681 — Mapping DataRaptor</title><style>
+:root{--ink:#141a23;--cloud:#5374b9;--sky:#8fa7d9;--mist:#eef3fb;--fog:#f6f9fd;--line:#dfe7f5;--text:#1d2939;--muted:#8193a8;--paper:#fff;--signal:#fe9339;--red:#ea001e;--green:#2e844a;--green-bg:#f3fbf0;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--fog);color:var(--text);font-family:var(--sans);font-size:13px;line-height:1.5;}
+header{background:var(--ink);color:#fff;padding:16px 28px 18px;}
+/* Squad OM: barra de marca y regreso al portal */
+.squad-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #232a35;}
+.squad-bar img{width:40px;height:auto;}
+.squad-bar strong{font-size:14px;}
+.squad-bar a{margin-left:auto;color:#c7cfdb;text-decoration:none;font-size:12px;background:#232a35;padding:6px 12px;border-radius:7px;}
+.squad-bar a:hover{color:#fff;background:var(--cloud);}
+header h1{font-size:17px;font-weight:900;letter-spacing:-.02em;margin-bottom:3px;}
+header .sub{font-size:11.5px;opacity:.72;}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--paper);border-bottom:1px solid var(--line);padding:9px 28px;box-shadow:0 2px 6px rgba(3,45,96,.06);}
+.btn{padding:7px 16px;border-radius:7px;font-size:12.5px;font-weight:700;cursor:pointer;border:none;transition:.15s;}
+.btn-save{background:var(--cloud);color:#fff;} .btn-save:hover{background:#0056b3;} .btn-save.saved{background:var(--green);}
+.btn-exp{background:var(--paper);color:var(--cloud);border:1.5px solid var(--cloud);} .btn-exp:hover{background:var(--mist);}
+.legend{display:flex;gap:10px;align-items:center;margin-left:auto;flex-wrap:wrap;}
+.leg{font-size:11.5px;display:flex;align-items:center;gap:4px;}
+.dot{width:11px;height:11px;border-radius:3px;display:inline-block;}
+.dot-c{background:#fde68a;border:1.5px solid #f59e0b;}
+.dot-v{background:#dbeafe;border:1.5px solid #3b82f6;}
+.status{font-size:11.5px;color:var(--muted);}
+.tabs{display:flex;background:var(--paper);border-bottom:2px solid var(--line);padding:0 20px;overflow-x:auto;}
+.tab{padding:10px 16px;font-size:12.5px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap;transition:.1s;margin-bottom:-2px;}
+.tab:hover{color:var(--cloud);} .tab.active{color:var(--cloud);border-bottom-color:var(--cloud);}
+.pane{display:none;padding:16px 20px 48px;max-width:100%;overflow-x:auto;}
+.pane.active{display:block;}
+.sec-title{font-size:13px;font-weight:700;color:var(--ink);margin:18px 0 6px;padding-left:2px;}
+table{width:100%;border-collapse:collapse;background:var(--paper);border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:12px;}
+th{background:var(--ink);color:#fff;font-weight:700;text-align:left;padding:8px 10px;font-size:11.5px;white-space:nowrap;}
+td{padding:4px 6px;border-bottom:1px solid #e8eef7;vertical-align:middle;}
+tr:nth-child(even) td{background:#fafbfd;}
+tr:hover td{background:#eef4ff!important;}
+td.path{font-family:var(--mono);font-size:11px;color:#4a3b6e;background:#f5f0ff!important;min-width:120px;}
+td.field{font-family:var(--mono);font-size:11px;color:#1a3b6e;background:#f0f5ff!important;min-width:90px;}
+td.tmf{font-family:var(--mono);font-size:11px;color:#065f46;background:#f0fbf5!important;}
+td.edit{background:#fffef2!important;}
+td.hdu-cell{background:#f8f8f8!important;font-size:11px;min-width:120px;}
+td input,td textarea{width:100%;border:none;background:transparent;font-family:inherit;font-size:12px;color:inherit;padding:2px 3px;border-radius:3px;resize:vertical;min-height:20px;outline:none;}
+td input:focus,td textarea:focus{background:#fffde0;box-shadow:0 0 0 2px var(--sky);border-radius:3px;}
+/* Row highlights */
+tr.row-change td{background:#fef9c3!important;border-left:4px solid #f59e0b!important;}
+tr.row-change td.path{background:#fef3c7!important;}
+tr.row-change td.field{background:#fef3c7!important;}
+tr.row-change td.tmf{background:#fef3c7!important;}
+tr.row-change td.hdu-cell{background:#fef3c7!important;}
+tr.row-verify td{background:#eff6ff!important;border-left:4px solid #3b82f6!important;}
+tr.row-verify td.path{background:#dbeafe!important;}
+tr.row-verify td.field{background:#dbeafe!important;}
+tr.row-verify td.tmf{background:#dbeafe!important;}
+tr.row-verify td.hdu-cell{background:#dbeafe!important;}
+tr.row-change:hover td{background:#fde68a!important;}
+tr.row-verify:hover td{background:#bfdbfe!important;}
+tr.user-changed td{border-left:4px solid var(--signal)!important;}
+.hdu-link{font-family:var(--mono);font-size:10.5px;background:var(--cloud);color:#fff;padding:1px 6px;border-radius:4px;text-decoration:none;display:inline-block;margin:1px 1px;}
+.hdu-link.verify{background:#3b82f6;}
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px;vertical-align:middle;}
+.b1{background:#dbeafe;color:#1e3a8a;} .b2{background:#fce7f3;color:#9d174d;} .b3{background:#d1fae5;color:#065f46;} .b4{background:#fef3c7;color:#78350f;} .b5{background:#e9d5ff;color:#5b21b6;}
+</style></head><body>
+<header>
+  <div class="squad-bar">
+    <img src="../../assets/img/salesforce-logo.webp" alt="Salesforce">
+    <strong>Squad OM</strong>
+    <a href="../../#docs">&larr; Volver a Documentación</a>
+  </div>
+  <h1><span style="background:#78350f;color:#fff;padding:2px 10px;border-radius:5px;font-size:12px;margin-right:8px;">TMF681</span>TMF681 — Mapping DataRaptor</h1>
+  <div class="sub">Telmex TAC · Editable Mapping · 27/10/2026</div>
+</header>
+<div class="toolbar">
+  <button class="btn btn-save" onclick="save()">💾 Guardar</button>
+  <button class="btn btn-exp" onclick="exportCSV()">⬇️ CSV</button>
+  <div class="legend">
+    <div class="leg"><span class="dot dot-c"></span> Campo con cambio (HDU)</div>
+    <div class="leg"><span class="dot dot-v"></span> Campo a verificar (HDU)</div>
+  </div>
+  <span class="status">Sin cambios guardados</span>
+</div>
+<div class="tabs"><div class="tab active" data-id="t0" onclick="tab('t0')">Servicio Base <span class="badge b1">Base</span></div><div class="tab" data-id="t1" onclick="tab('t1')">OTT <span class="badge b5">OTT</span></div></div>
+<div class="pane active" data-id="t0"><div class="sec-title">TMF681Data — Contacto y Notificación</div><table><thead><tr>
+  <th>Objeto SF</th><th>Path / Relación</th><th>Campo SF</th>
+  <th>Notas</th><th>Campo TMF (Target)</th><th>Lógica</th><th>Comentarios</th>
+  <th style="background:#b45309;">HDU</th><th style="background:#b45309;">Nota del cambio</th>
+</tr></thead><tbody><tr class="row-change">
+    <td class="path"><input data-k="k0_so" value="Account"/></td>
+    <td class="path"><input data-k="k0_sp" value="vlocity_cmt__PrimaryContactId__r"/></td>
+    <td class="field"><input data-k="k0_sf" value="Name"/></td>
+    <td class="edit"><input data-k="k0_n" value="PF: Nombre+Apellido / PM: Razón Social"/></td>
+    <td class="tmf"><input data-k="k0_tf" value="Nombre en notificación"/></td>
+    <td class="edit"><textarea data-k="k0_lg" rows="2">PF sin cambio. PM → Account.Name (Razón Social).</textarea></td>
+    <td class="edit"><textarea data-k="k0_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"><a class="hdu-link" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9373" target="_blank">TAC-9373</a></td><td class="edit">CAMBIO: PM → Account.Name (Razón Social). PF → PrimaryContactId__r.Name (sin cambio).</td>
+  </tr><tr class="row-verify">
+    <td class="path"><input data-k="k1_so" value="Account"/></td>
+    <td class="path"><input data-k="k1_sp" value="vlocity_cmt__PrimaryContactId__r"/></td>
+    <td class="field"><input data-k="k1_sf" value="Email"/></td>
+    <td class="edit"><input data-k="k1_n" value=""/></td>
+    <td class="tmf"><input data-k="k1_tf" value="contactMedium (email).characteristic.emailAddress"/></td>
+    <td class="edit"><textarea data-k="k1_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k1_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"><a class="hdu-link verify" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9371" target="_blank">TAC-9371</a> <a class="hdu-link verify" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9369" target="_blank">TAC-9369</a></td><td class="edit">Verificar que PrimaryContactId__c esté disponible en la query de Account para PM. Ya usa PrimaryContactId__r.</td>
+  </tr><tr class="row-verify">
+    <td class="path"><input data-k="k2_so" value="Account"/></td>
+    <td class="path"><input data-k="k2_sp" value="vlocity_cmt__PrimaryContactId__r"/></td>
+    <td class="field"><input data-k="k2_sf" value="MobilePhone"/></td>
+    <td class="edit"><input data-k="k2_n" value=""/></td>
+    <td class="tmf"><input data-k="k2_tf" value="contactMedium (móvil).characteristic.phoneNumber"/></td>
+    <td class="edit"><textarea data-k="k2_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k2_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"><a class="hdu-link verify" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9371" target="_blank">TAC-9371</a> <a class="hdu-link verify" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9369" target="_blank">TAC-9369</a></td><td class="edit">Verificar que PrimaryContactId__c esté disponible en la query de Account para PM.</td>
+  </tr><tr>
+    <td class="path"><input data-k="k3_so" value="Account"/></td>
+    <td class="path"><input data-k="k3_sp" value=""/></td>
+    <td class="field"><input data-k="k3_sf" value="vlocity_cmt__PrimaryContactId__c"/></td>
+    <td class="edit"><input data-k="k3_n" value="ID del contacto principal"/></td>
+    <td class="tmf"><input data-k="k3_tf" value="contact.id"/></td>
+    <td class="edit"><textarea data-k="k3_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k3_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr></tbody></table><div class="sec-title">TMF681Data — Características del Servicio</div><table><thead><tr>
+  <th>Objeto SF</th><th>Path / Relación</th><th>Campo SF</th>
+  <th>Notas</th><th>Campo TMF (Target)</th><th>Lógica</th><th>Comentarios</th>
+  <th style="background:#b45309;">HDU</th><th style="background:#b45309;">Nota del cambio</th>
+</tr></thead><tbody><tr class="row-change">
+    <td class="path"><input data-k="k0_so" value="Account"/></td>
+    <td class="path"><input data-k="k0_sp" value=""/></td>
+    <td class="field"><input data-k="k0_sf" value="TMX_VNT_Tipo_Persona__c"/></td>
+    <td class="edit"><input data-k="k0_n" value="FISICA / MORAL"/></td>
+    <td class="tmf"><input data-k="k0_tf" value="characteristic|59 (cantidadExpira)"/></td>
+    <td class="edit"><textarea data-k="k0_lg" rows="2">Enviar valor real del campo, NO el fijo &quot;Persona Fisica&quot;</textarea></td>
+    <td class="edit"><textarea data-k="k0_cm" rows="2">Confirmar valor esperado por PISA para PM</textarea></td>
+    <td class="hdu-cell"><a class="hdu-link" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9373" target="_blank">TAC-9373</a></td><td class="edit">CAMBIO: enviar TMX_VNT_Tipo_Persona__c real (FISICA/MORAL) en lugar del valor fijo &quot;Persona Fisica&quot;.</td>
+  </tr><tr class="row-verify">
+    <td class="path"><input data-k="k1_so" value="Order"/></td>
+    <td class="path"><input data-k="k1_sp" value=""/></td>
+    <td class="field"><input data-k="k1_sf" value="TMX_VNT_Tipo_de_cliente__c"/></td>
+    <td class="edit"><input data-k="k1_n" value="Hogar / Negocio"/></td>
+    <td class="tmf"><input data-k="k1_tf" value="characteristic|65 (tipoServicio)"/></td>
+    <td class="edit"><textarea data-k="k1_lg" rows="2">Hogar+VyD=1L, Hogar+Datos=ML, Negocio=2L</textarea></td>
+    <td class="edit"><textarea data-k="k1_cm" rows="2">Verificar alias Order:TipoDeCliente</textarea></td>
+    <td class="hdu-cell"><a class="hdu-link verify" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9373" target="_blank">TAC-9373</a></td><td class="edit">Verificar que el alias Order:TipoDeCliente referencia Order.TMX_VNT_Tipo_de_cliente__c (ADR-017).</td>
+  </tr><tr class="row-verify">
+    <td class="path"><input data-k="k2_so" value="OrderItem"/></td>
+    <td class="path"><input data-k="k2_sp" value="Product2"/></td>
+    <td class="field"><input data-k="k2_sf" value="Family"/></td>
+    <td class="edit"><input data-k="k2_n" value=""/></td>
+    <td class="tmf"><input data-k="k2_tf" value="characteristic|65 — componente de la fórmula tipoServicio"/></td>
+    <td class="edit"><textarea data-k="k2_lg" rows="2">Voz y Datos / Datos / otro</textarea></td>
+    <td class="edit"><textarea data-k="k2_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"><a class="hdu-link verify" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9373" target="_blank">TAC-9373</a></td><td class="edit">Verificar que el alias Order:TipoDeCliente referencia Order.TMX_VNT_Tipo_de_cliente__c (ADR-017).</td>
+  </tr><tr>
+    <td class="path"><input data-k="k3_so" value="Order"/></td>
+    <td class="path"><input data-k="k3_sp" value="vlocity_cmt__DefaultServiceAccountId__r"/></td>
+    <td class="field"><input data-k="k3_sf" value="TMX_VNT_Equipo__c"/></td>
+    <td class="edit"><input data-k="k3_n" value=""/></td>
+    <td class="tmf"><input data-k="k3_tf" value="equipment (additionalHeader)"/></td>
+    <td class="edit"><textarea data-k="k3_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k3_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr></tbody></table><div class="sec-title">TMF681Data — Domiciliación / Tarjetahabiente</div><table><thead><tr>
+  <th>Objeto SF</th><th>Path / Relación</th><th>Campo SF</th>
+  <th>Notas</th><th>Campo TMF (Target)</th><th>Lógica</th><th>Comentarios</th>
+  <th style="background:#b45309;">HDU</th><th style="background:#b45309;">Nota del cambio</th>
+</tr></thead><tbody><tr>
+    <td class="path"><input data-k="k0_so" value="Order"/></td>
+    <td class="path"><input data-k="k0_sp" value=""/></td>
+    <td class="field"><input data-k="k0_sf" value="TMX_VNT_NombreTarjetahabiente__c"/></td>
+    <td class="edit"><input data-k="k0_n" value=""/></td>
+    <td class="tmf"><input data-k="k0_tf" value="paymentMethod.relatedParty.name"/></td>
+    <td class="edit"><textarea data-k="k0_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k0_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k1_so" value="Order"/></td>
+    <td class="path"><input data-k="k1_sp" value=""/></td>
+    <td class="field"><input data-k="k1_sf" value="TMX_VNT_ApellidoPaternoTarjetahabiente__c"/></td>
+    <td class="edit"><input data-k="k1_n" value=""/></td>
+    <td class="tmf"><input data-k="k1_tf" value="paymentMethod.relatedParty.lastName"/></td>
+    <td class="edit"><textarea data-k="k1_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k1_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k2_so" value="Order"/></td>
+    <td class="path"><input data-k="k2_sp" value=""/></td>
+    <td class="field"><input data-k="k2_sf" value="TMX_VNT_ApellidoMaternoTarjetahabiente__c"/></td>
+    <td class="edit"><input data-k="k2_n" value=""/></td>
+    <td class="tmf"><input data-k="k2_tf" value="paymentMethod.relatedParty.maternalFamilyName"/></td>
+    <td class="edit"><textarea data-k="k2_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k2_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k3_so" value="Order"/></td>
+    <td class="path"><input data-k="k3_sp" value=""/></td>
+    <td class="field"><input data-k="k3_sf" value="TMX_VNT_CelularTarjetahabiente__c"/></td>
+    <td class="edit"><input data-k="k3_n" value=""/></td>
+    <td class="tmf"><input data-k="k3_tf" value="paymentMethod.contactMedium (móvil)"/></td>
+    <td class="edit"><textarea data-k="k3_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k3_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k4_so" value="Order"/></td>
+    <td class="path"><input data-k="k4_sp" value=""/></td>
+    <td class="field"><input data-k="k4_sf" value="TMX_VNT_CorreoElectronicoTarjetahabiente__c"/></td>
+    <td class="edit"><input data-k="k4_n" value=""/></td>
+    <td class="tmf"><input data-k="k4_tf" value="paymentMethod.contactMedium (email)"/></td>
+    <td class="edit"><textarea data-k="k4_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k4_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k5_so" value="Order"/></td>
+    <td class="path"><input data-k="k5_sp" value=""/></td>
+    <td class="field"><input data-k="k5_sf" value="TMX_OM_UrlDomiciliacion__c"/></td>
+    <td class="edit"><input data-k="k5_n" value=""/></td>
+    <td class="tmf"><input data-k="k5_tf" value="linkDomiciliacion"/></td>
+    <td class="edit"><textarea data-k="k5_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k5_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k6_so" value="Order"/></td>
+    <td class="path"><input data-k="k6_sp" value=""/></td>
+    <td class="field"><input data-k="k6_sf" value="TMX_VNT_URLDocumentos__c"/></td>
+    <td class="edit"><input data-k="k6_n" value=""/></td>
+    <td class="tmf"><input data-k="k6_tf" value="urlDocumentos"/></td>
+    <td class="edit"><textarea data-k="k6_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k6_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k7_so" value="Order"/></td>
+    <td class="path"><input data-k="k7_sp" value=""/></td>
+    <td class="field"><input data-k="k7_sf" value="TMX_VNT_Domiciliacion__c"/></td>
+    <td class="edit"><input data-k="k7_n" value=""/></td>
+    <td class="tmf"><input data-k="k7_tf" value="domiciliacion (flag)"/></td>
+    <td class="edit"><textarea data-k="k7_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k7_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr></tbody></table><div class="sec-title">TMF681Data — Metadata de Orden</div><table><thead><tr>
+  <th>Objeto SF</th><th>Path / Relación</th><th>Campo SF</th>
+  <th>Notas</th><th>Campo TMF (Target)</th><th>Lógica</th><th>Comentarios</th>
+  <th style="background:#b45309;">HDU</th><th style="background:#b45309;">Nota del cambio</th>
+</tr></thead><tbody><tr>
+    <td class="path"><input data-k="k0_so" value="Order"/></td>
+    <td class="path"><input data-k="k0_sp" value=""/></td>
+    <td class="field"><input data-k="k0_sf" value="TMX_VNT_Tipo_de_alta__c"/></td>
+    <td class="edit"><input data-k="k0_n" value=""/></td>
+    <td class="tmf"><input data-k="k0_tf" value="category"/></td>
+    <td class="edit"><textarea data-k="k0_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k0_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k1_so" value="Order"/></td>
+    <td class="path"><input data-k="k1_sp" value=""/></td>
+    <td class="field"><input data-k="k1_sf" value="TMX_PVT_CodigoCanalPISA__c"/></td>
+    <td class="edit"><input data-k="k1_n" value=""/></td>
+    <td class="tmf"><input data-k="k1_tf" value="channel"/></td>
+    <td class="edit"><textarea data-k="k1_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k1_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k2_so" value="Order"/></td>
+    <td class="path"><input data-k="k2_sp" value=""/></td>
+    <td class="field"><input data-k="k2_sf" value="TMX_PVT_SiglasPISA__c"/></td>
+    <td class="edit"><input data-k="k2_n" value=""/></td>
+    <td class="tmf"><input data-k="k2_tf" value="office"/></td>
+    <td class="edit"><textarea data-k="k2_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k2_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k3_so" value="Order"/></td>
+    <td class="path"><input data-k="k3_sp" value=""/></td>
+    <td class="field"><input data-k="k3_sf" value="TMX_OM_Concesionario__c"/></td>
+    <td class="edit"><input data-k="k3_n" value=""/></td>
+    <td class="tmf"><input data-k="k3_tf" value="empresa"/></td>
+    <td class="edit"><textarea data-k="k3_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k3_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k4_so" value="Order"/></td>
+    <td class="path"><input data-k="k4_sp" value=""/></td>
+    <td class="field"><input data-k="k4_sf" value="TMX_OM_DiaLimiteDePago__c"/></td>
+    <td class="edit"><input data-k="k4_n" value=""/></td>
+    <td class="tmf"><input data-k="k4_tf" value="diaLimiteDePago"/></td>
+    <td class="edit"><textarea data-k="k4_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k4_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k5_so" value="Order"/></td>
+    <td class="path"><input data-k="k5_sp" value=""/></td>
+    <td class="field"><input data-k="k5_sf" value="TMX_OM_FechaLimiteDePago__c"/></td>
+    <td class="edit"><input data-k="k5_n" value=""/></td>
+    <td class="tmf"><input data-k="k5_tf" value="fechaLimiteDePago"/></td>
+    <td class="edit"><textarea data-k="k5_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k5_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k6_so" value="OrderItem"/></td>
+    <td class="path"><input data-k="k6_sp" value="Product2"/></td>
+    <td class="field"><input data-k="k6_sf" value="Family"/></td>
+    <td class="edit"><input data-k="k6_n" value=""/></td>
+    <td class="tmf"><input data-k="k6_tf" value="productFamily"/></td>
+    <td class="edit"><textarea data-k="k6_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k6_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k7_so" value="OrderItem"/></td>
+    <td class="path"><input data-k="k7_sp" value="Product2"/></td>
+    <td class="field"><input data-k="k7_sf" value="ProductCode"/></td>
+    <td class="edit"><input data-k="k7_n" value=""/></td>
+    <td class="tmf"><input data-k="k7_tf" value="productCode"/></td>
+    <td class="edit"><textarea data-k="k7_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k7_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k8_so" value="OrderItem"/></td>
+    <td class="path"><input data-k="k8_sp" value=""/></td>
+    <td class="field"><input data-k="k8_sf" value="ATT_CODIGO_FACTURACION"/></td>
+    <td class="edit"><input data-k="k8_n" value=""/></td>
+    <td class="tmf"><input data-k="k8_tf" value="billingCode"/></td>
+    <td class="edit"><textarea data-k="k8_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k8_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k9_so" value="OrderItem"/></td>
+    <td class="path"><input data-k="k9_sp" value="Product2"/></td>
+    <td class="field"><input data-k="k9_sf" value="vlocity_cmt__ProductSpecName__c"/></td>
+    <td class="edit"><input data-k="k9_n" value=""/></td>
+    <td class="tmf"><input data-k="k9_tf" value="productSpecName"/></td>
+    <td class="edit"><textarea data-k="k9_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k9_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr></tbody></table></div><div class="pane" data-id="t1"><div class="sec-title">TMF681DataOTT — Servicios OTT</div><table><thead><tr>
+  <th>Objeto SF</th><th>Path / Relación</th><th>Campo SF</th>
+  <th>Notas</th><th>Campo TMF (Target)</th><th>Lógica</th><th>Comentarios</th>
+  <th style="background:#b45309;">HDU</th><th style="background:#b45309;">Nota del cambio</th>
+</tr></thead><tbody><tr class="row-change">
+    <td class="path"><input data-k="k0_so" value="Account"/></td>
+    <td class="path"><input data-k="k0_sp" value="vlocity_cmt__PrimaryContactId__r"/></td>
+    <td class="field"><input data-k="k0_sf" value="Name"/></td>
+    <td class="edit"><input data-k="k0_n" value="PF: Nombre+Apellido / PM: Razón Social"/></td>
+    <td class="tmf"><input data-k="k0_tf" value="Nombre en notificación OTT"/></td>
+    <td class="edit"><textarea data-k="k0_lg" rows="2">PF sin cambio. PM → Account.Name (Razón Social).</textarea></td>
+    <td class="edit"><textarea data-k="k0_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"><a class="hdu-link" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9373" target="_blank">TAC-9373</a></td><td class="edit">CAMBIO: PM → Account.Name (Razón Social). PF → PrimaryContactId__r.Name (sin cambio).</td>
+  </tr><tr class="row-verify">
+    <td class="path"><input data-k="k1_so" value="Account"/></td>
+    <td class="path"><input data-k="k1_sp" value="vlocity_cmt__PrimaryContactId__r"/></td>
+    <td class="field"><input data-k="k1_sf" value="Email"/></td>
+    <td class="edit"><input data-k="k1_n" value=""/></td>
+    <td class="tmf"><input data-k="k1_tf" value="contactMedium (email).characteristic.emailAddress"/></td>
+    <td class="edit"><textarea data-k="k1_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k1_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"><a class="hdu-link verify" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9371" target="_blank">TAC-9371</a> <a class="hdu-link verify" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9369" target="_blank">TAC-9369</a></td><td class="edit">Verificar que PrimaryContactId__c esté disponible en la query de Account para PM. Ya usa PrimaryContactId__r.</td>
+  </tr><tr class="row-verify">
+    <td class="path"><input data-k="k2_so" value="Account"/></td>
+    <td class="path"><input data-k="k2_sp" value="vlocity_cmt__PrimaryContactId__r"/></td>
+    <td class="field"><input data-k="k2_sf" value="MobilePhone"/></td>
+    <td class="edit"><input data-k="k2_n" value=""/></td>
+    <td class="tmf"><input data-k="k2_tf" value="contactMedium (móvil).characteristic.phoneNumber"/></td>
+    <td class="edit"><textarea data-k="k2_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k2_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"><a class="hdu-link verify" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9371" target="_blank">TAC-9371</a> <a class="hdu-link verify" href="https://tmxrncomosi1.atlassian.net/browse/TAC-9369" target="_blank">TAC-9369</a></td><td class="edit">Verificar que PrimaryContactId__c esté disponible en la query de Account para PM.</td>
+  </tr><tr>
+    <td class="path"><input data-k="k3_so" value="Account"/></td>
+    <td class="path"><input data-k="k3_sp" value=""/></td>
+    <td class="field"><input data-k="k3_sf" value="vlocity_cmt__PrimaryContactId__c"/></td>
+    <td class="edit"><input data-k="k3_n" value=""/></td>
+    <td class="tmf"><input data-k="k3_tf" value="contact.id"/></td>
+    <td class="edit"><textarea data-k="k3_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k3_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k4_so" value="Account (Service)"/></td>
+    <td class="path"><input data-k="k4_sp" value=""/></td>
+    <td class="field"><input data-k="k4_sf" value="TMX_VNT_Equipo__c"/></td>
+    <td class="edit"><input data-k="k4_n" value=""/></td>
+    <td class="tmf"><input data-k="k4_tf" value="equipment"/></td>
+    <td class="edit"><textarea data-k="k4_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k4_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k5_so" value="OrderItem"/></td>
+    <td class="path"><input data-k="k5_sp" value="Product2"/></td>
+    <td class="field"><input data-k="k5_sf" value="Name"/></td>
+    <td class="edit"><input data-k="k5_n" value="Filtro: Servicios OTT Class; excluye NETFLIX PS; excluye TMX_OM_SubEstadoAprov__c = error-ott"/></td>
+    <td class="tmf"><input data-k="k5_tf" value="productName OTT"/></td>
+    <td class="edit"><textarea data-k="k5_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k5_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k6_so" value="OrderItem"/></td>
+    <td class="path"><input data-k="k6_sp" value="Product2"/></td>
+    <td class="field"><input data-k="k6_sf" value="ProductCode"/></td>
+    <td class="edit"><input data-k="k6_n" value=""/></td>
+    <td class="tmf"><input data-k="k6_tf" value="productCode OTT"/></td>
+    <td class="edit"><textarea data-k="k6_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k6_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k7_so" value="OrderItem"/></td>
+    <td class="path"><input data-k="k7_sp" value=""/></td>
+    <td class="field"><input data-k="k7_sf" value="TMX_OM_LinkVinculacionOtt__c"/></td>
+    <td class="edit"><input data-k="k7_n" value=""/></td>
+    <td class="tmf"><input data-k="k7_tf" value="linkVinculacion OTT"/></td>
+    <td class="edit"><textarea data-k="k7_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k7_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k8_so" value="OrderItem"/></td>
+    <td class="path"><input data-k="k8_sp" value=""/></td>
+    <td class="field"><input data-k="k8_sf" value="ATT_CODIGO_FACTURACION"/></td>
+    <td class="edit"><input data-k="k8_n" value=""/></td>
+    <td class="tmf"><input data-k="k8_tf" value="billingCode OTT"/></td>
+    <td class="edit"><textarea data-k="k8_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k8_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr><tr>
+    <td class="path"><input data-k="k9_so" value="Order"/></td>
+    <td class="path"><input data-k="k9_sp" value=""/></td>
+    <td class="field"><input data-k="k9_sf" value="TMX_OM_Concesionario__c"/></td>
+    <td class="edit"><input data-k="k9_n" value=""/></td>
+    <td class="tmf"><input data-k="k9_tf" value="Empresa (OTT)"/></td>
+    <td class="edit"><textarea data-k="k9_lg" rows="2"></textarea></td>
+    <td class="edit"><textarea data-k="k9_cm" rows="2"></textarea></td>
+    <td class="hdu-cell"></td><td class="edit"></td>
+  </tr></tbody></table></div>
+<script>
+const KEY = location.pathname.split('/').pop().replace('.html','');
+function save(){
+  const d={};
+  document.querySelectorAll('[data-k]').forEach(el=>{ d[el.dataset.k]=el.value; });
+  localStorage.setItem(KEY,JSON.stringify(d));
+  const b=document.querySelector('.btn-save');
+  b.classList.add('saved'); b.textContent='✅ Guardado';
+  document.querySelector('.status').textContent='Guardado: '+new Date().toLocaleTimeString('es-MX');
+  setTimeout(()=>{ b.classList.remove('saved'); b.textContent='💾 Guardar'; },1800);
+}
+function load(){
+  const raw=localStorage.getItem(KEY);
+  if(!raw) return;
+  const d=JSON.parse(raw);
+  document.querySelectorAll('[data-k]').forEach(el=>{ if(d[el.dataset.k]!=null) el.value=d[el.dataset.k]; });
+}
+function exportCSV(){
+  let csv='Objeto SF,Path SF,Campo SF,Notas,Campo TMF,Lógica,Comentarios,HDU Cambio,Nota Cambio\n';
+  document.querySelectorAll('table tbody tr').forEach(tr=>{
+    const cells=[...tr.querySelectorAll('td')].map(td=>{
+      const inp=td.querySelector('[data-k]');
+      return '"'+((inp?inp.value:td.innerText)||'').replace(/"/g,"'").replace(/\n/g,' ')+'"';
+    });
+    if(cells.length>1) csv+=cells.join(',')+' \n';
+  });
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download=KEY+'.csv'; a.click();
+}
+function tab(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.id===id));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active', p.dataset.id===id));
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  load();
+  document.querySelectorAll('[data-k]').forEach(el=>{
+    el.addEventListener('input',()=>{ el.closest('tr')?.classList.add('user-changed'); });
+  });
+});
+</script></body></html>
