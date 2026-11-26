@@ -10,7 +10,7 @@ assets/css/styles.css           # Estilos del portal
 assets/data/jira.js             # Foto del sprint activo (tablero Jira TAC 312)
 docs/mappings/*.html            # Mappings TMF editables (enlazados desde Documentación)
 docs/sprints/*.html             # Story maps de sprints cerrados (Sprint 1)
-docs/refinamientos/*.html       # Refinamientos para el Sprint 3
+docs/refinamientos/*.html       # Refinamientos del Sprint 3: cuadro de notas de la sesión
 ```
 
 ## Agregar documentación
@@ -18,8 +18,11 @@ docs/refinamientos/*.html       # Refinamientos para el Sprint 3
 - **Enlace externo** (Drive, Lucid, NotebookLM…): copia un bloque `link-card` en "Enlaces del proyecto" de `index.html`.
 - **Mapping TMF**: copia el HTML a `docs/mappings/`, agrégale la barra `squad-bar` del encabezado
   (ver cualquier mapping existente) y copia un bloque `link-card` en "Mappings de APIs TMF".
-- **Refinamiento (Sprint 3)**: reemplaza el HTML correspondiente en `docs/refinamientos/`
-  conservando el header con `squad-bar` (botón "Volver a Sprint 3").
+- **Refinamiento (Sprint 3)**: cada página es un cuadro de notas para la sesión
+  (`assets/js/refinamiento.js` + `assets/css/refinamiento.css`). Para uno nuevo, copia una página existente,
+  cambia el `<title>`, el `<h1>` y `data-id`/`data-title` del `textarea` (el `data-id` es la fila en la hoja
+  `Refinamientos`), y agrega su `link-card` en Sprint 3. Las notas se guardan en el navegador al escribir y se
+  suben al Sheet 3 s después (o con Cmd+S); si dos personas editan a la vez, gana el último en guardar.
 - Commit y push a `main`.
 
 ## Actualizar el tablero del sprint
@@ -49,7 +52,7 @@ Las secciones **Dudas** (tabla con status Abierto/Cerrado) y **Notas y Grabacion
    ```js
    window.NOTES_API_URL = 'https://script.google.com/macros/s/XXXX/exec';
    ```
-6. Las hojas `Dudas`, `Notas y Grabaciones` y `Pendientes` se crean solas en la primera escritura. También se pueden editar directo en el Sheet.
+6. Las hojas `Dudas`, `Notas y Grabaciones`, `Pendientes` y `Refinamientos` se crean solas en la primera escritura. También se pueden editar directo en el Sheet.
 
 Si cambias `Code.gs`, publica con **Implementar > Gestionar implementaciones > Editar > Nueva versión** para conservar la misma URL.
 

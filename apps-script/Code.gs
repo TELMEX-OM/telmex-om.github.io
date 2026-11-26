@@ -1,5 +1,5 @@
 /**
- * Squad OM — API de Dudas, Notas y Grabaciones y Pendientes.
+ * Squad OM — API de Dudas, Notas y Grabaciones, Pendientes y notas de Refinamientos.
  * Se pega en Extensiones > Apps Script del Google Sheet y se publica como Web App
  * (Ejecutar como: Yo · Acceso: Cualquier usuario). Ver README.md.
  *
@@ -21,6 +21,13 @@ const SHEETS = {
     name: 'Pendientes',
     fields: ['id', 'tarea', 'responsable', 'sprint', 'color', 'status', 'actualizado'],
     headers: ['ID', 'Pendiente', 'Responsable', 'Sprint', 'Color', 'Status', 'Actualizado']
+  },
+  // Una fila por refinamiento (ID = nombre del archivo, ej. solo-voz); textos largos
+  refinamientos: {
+    name: 'Refinamientos',
+    fields: ['id', 'titulo', 'notas', 'actualizado'],
+    headers: ['ID', 'Refinamiento', 'Notas de la sesión', 'Actualizado'],
+    maxLength: 45000
   }
 };
 
@@ -49,16 +56,25 @@ function doPost(e) {
         if (f === 'id') return Utilities.getUuid().slice(0, 8);
         if (f === 'actualizado') return now;
         if (f === 'status') return normalizeStatus(item.status);
-        return clean(item[f]);
+        return clean(item[f], cfg.maxLength);
       }));
     } else if (body.action === 'update') {
       const row = rowOf(sheet, body.id);
       Object.entries(body.changes || {}).forEach(([field, value]) => {
         const col = cfg.fields.indexOf(field);
         if (col <= 0 || field === 'actualizado') return;
-        sheet.getRange(row, col + 1).setValue(field === 'status' ? normalizeStatus(value) : clean(value));
+        sheet.getRange(row, col + 1).setValue(field === 'status' ? normalizeStatus(value) : clean(value, cfg.maxLength));
       });
       sheet.getRange(row, cfg.fields.indexOf('actualizado') + 1).setValue(now);
+    } else if (body.action === 'save') {
+      // Crea o reemplaza la fila con un ID fijo (notas de refinamiento)
+      const id = String(body.id || '');
+      if (!/^[a-z0-9-]{1,60}$/.test(id)) throw new Error('ID inválido');
+      const ids = sheet.getRange(2, 1, Math.max(sheet.getLastRow() - 1, 1), 1).getDisplayValues().map(r => r[0]);
+      const values = cfg.fields.map(f => f === 'id' ? id : f === 'actualizado' ? now : clean((body.item || {})[f], cfg.maxLength));
+      const index = ids.indexOf(id);
+      if (index < 0) sheet.appendRow(values);
+      else sheet.getRange(index + 2, 1, 1, values.length).setValues([values]);
     } else if (body.action === 'delete') {
       sheet.deleteRow(rowOf(sheet, body.id));
     } else {
@@ -105,8 +121,8 @@ function normalizeStatus(value) {
 }
 
 // Evita que un texto se interprete como fórmula en el Sheet
-function clean(value) {
-  const text = String(value == null ? '' : value).slice(0, 5000);
+function clean(value, maxLength) {
+  const text = String(value == null ? '' : value).slice(0, maxLength || 5000);
   return /^[=+\-@]/.test(text) ? "'" + text : text;
 }
 

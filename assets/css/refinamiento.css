@@ -1,0 +1,40 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f6f9fd; color: #1d2939; min-height: 100vh; display: flex; flex-direction: column; }
+header { background: #141a23; color: #fff; padding: 16px 40px 28px; }
+.squad-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #232a35; }
+.squad-bar img { width: 40px; height: auto; }
+.squad-bar strong { font-size: 14px; }
+.squad-bar a { margin-left: auto; color: #c7cfdb; text-decoration: none; font-size: 12px; background: #232a35; padding: 6px 12px; border-radius: 7px; }
+.squad-bar a:hover { color: #fff; background: #5374b9; }
+h1 { font-size: 1.8rem; }
+header p { color: #c7cfdb; margin-top: 6px; font-size: 0.95rem; }
+main { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 28px 40px 32px; }
+
+.ref-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ref-toolbar .spacer { flex: 1; }
+.ref-btn {
+  border: 1px solid #dfe7f5; background: #fff; color: #1d2939; cursor: pointer;
+  padding: 6px 12px; border-radius: 7px; font-size: 13px; font-weight: 600;
+}
+.ref-btn:hover { border-color: #5374b9; color: #5374b9; }
+.ref-key { font: inherit; font-size: 13px; padding: 6px 10px; border: 1px solid #dfe7f5; border-radius: 7px; width: 180px; }
+#ref-notes {
+  flex: 1; width: 100%; min-height: 70vh; resize: vertical;
+  font: 16px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #1d2939;
+  padding: 24px 28px; border: 1px solid #dfe7f5; border-radius: 14px; background: #fff;
+  box-shadow: 0 6px 18px rgba(20, 26, 35, 0.05); outline: none;
+}
+#ref-notes:focus { border-color: #5374b9; box-shadow: 0 0 0 3px rgba(83, 116, 185, 0.15); }
+.ref-foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 13px; color: #8193a8; }
+.ref-status.ok { color: #065f46; }
+.ref-status.warn { color: #92400e; }
+.ref-status.error { color: #ba0517; }
+
+/* Pantalla completa: solo el cuadro de texto */
+.focus-mode header { display: none; }
+.focus-mode main { padding: 16px; }
+.focus-mode #ref-notes { min-height: calc(100vh - 110px); }
+
+@media (max-width: 700px) {
+  header, main { padding-left: 16px; padding-right: 16px; }
+}
